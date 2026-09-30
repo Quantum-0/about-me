@@ -488,6 +488,55 @@
       background: var(--accent);
     }
 
+        .external-warning-overlay {
+      position: fixed;
+      z-index: 200;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+
+    .external-warning-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .external-warning-modal {
+      width: min(520px, 100%);
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #171717;
+      box-shadow: 0 24px 80px rgba(0,0,0,.45);
+      transform: translateY(20px);
+      transition: transform .4s var(--ease);
+    }
+
+    .external-warning-overlay.is-open .external-warning-modal {
+      transform: translateY(0);
+    }
+
+    .external-warning-modal h2 {
+      font-size: 32px;
+    }
+
+    .external-warning-modal p {
+      margin: 18px 0 0;
+      color: #c8c8c8;
+      line-height: 1.6;
+    }
+
+    .external-warning-modal .cta-row {
+      margin-top: 24px;
+    }
+
     /* ---------- Responsive ---------- */
 
     @media (max-width: 800px) {
@@ -569,11 +618,23 @@
     <button class="side-dot" data-target="scene-4" aria-label="Scene 4"></button>
     <button class="side-dot" data-target="scene-5" aria-label="Scene 5"></button>
     <button class="side-dot" data-target="scene-6" aria-label="Scene 6"></button>
+    <button class="side-dot" data-target="scene-7" aria-label="Scene 7"></button>
   </nav>
 
   <div class="scroll-hint">
     <span data-i18n="scroll">scroll to explore</span>
     <span class="scroll-hint-line"></span>
+  </div>
+
+  <div class="external-warning-overlay" id="external-warning-overlay" aria-hidden="true">
+    <div class="external-warning-modal" role="dialog" aria-modal="true" aria-labelledby="external-warning-title">
+      <h2 id="external-warning-title" data-i18n="warning.title">Внимание</h2>
+      <p data-i18n="warning.text">Вы переходите на территорию тупых пошлых шуток и кринжа, вы уверены что хотите продолжить?</p>
+      <div class="cta-row">
+        <button class="button primary" type="button" id="warning-confirm" data-i18n="warning.confirm">Да, продолжить</button>
+        <button class="button" type="button" id="warning-cancel" data-i18n="warning.cancel">Нет, вернуться</button>
+      </div>
+    </div>
   </div>
 
   <main>
@@ -630,26 +691,91 @@
       stylized 3D diorama, peaceful ending, no text, no logos, no watermark."
     -->
 
+    <!--
+      BACKGROUND IMAGE PROMPTS
+
+      Scene 1:
+      "A dark cozy miniature diorama representing a modern developer's personal workspace,
+      slightly stylized 3D, matte materials, cinematic soft lighting. A slim male anthropomorphic
+      fox with dark brown-black fur, light gray-white markings, white paws and tail tip, subtle
+      deep red markings, sitting at a desk with a laptop and two monitors. Tiny hints of code,
+      Twitch interface and creative tools around the room. Warm practical lights, subtle red and
+      mint-green accents, dark charcoal environment, premium modern portfolio aesthetic, cinematic
+      depth of field, no text, no logos, no watermark."
+
+      Scene 2:
+      "A dark futuristic miniature city representing backend engineering. A slim male anthropomorphic
+      fox developer walks through a tiny city made of server buildings and glowing data routes.
+      Docker containers represented as modular buildings, Kafka as flowing streams of light,
+      APIs as interconnected roads, Python and FastAPI suggested through abstract visual motifs.
+      Dark charcoal palette, restrained red and mint accents, cinematic soft volumetric lighting,
+      sophisticated 3D diorama, matte materials, no text, no logos, no watermark."
+
+      Scene 3:
+      "A cinematic miniature railway / road through a dark modern world representing a software
+      developer career. A slim male anthropomorphic fox walks beside a sequence of distinct
+      stations representing freelance work, smart home engineering, software development,
+      analytics, culture and tickets. Each station has its own subtle visual identity while
+      remaining in the same dark cozy world. Red and mint accent lights, warm atmospheric
+      lighting, stylized 3D diorama, cinematic depth of field, no text, no logos, no watermark."
+
+      Scene 4:
+      "A cozy dark miniature creative technology workshop filled with personal software projects.
+      A slim male anthropomorphic fox works on several projects at once: a glowing Twitch bot
+      service hub, a small Unity game on a monitor, an image-resizing machine, open-source code
+      displayed on screens, IoT boards, cables and tiny server racks. Leave several clean surfaces
+      where project screenshots could visually fit. The scene feels like a creative inventor's
+      workshop rather than a corporate office. Dark charcoal palette, red and subtle mint accents,
+      cinematic 3D diorama, soft warm lighting, no text, no logos, no watermark."
+
+      Scene 5:
+      "A cozy dark streamer room at night. A slim male anthropomorphic fox with dark brown-black
+      fur and light markings sits in front of a gaming PC and multiple monitors, wearing a headset
+      and streaming. One screen suggests a horror game, another shows a live streaming interface,
+      microphone and small desk lights nearby. The mood is relaxed and playful, representing
+      streaming as a hobby, recreation and communication practice. Warm dark room, subtle red and
+      mint accents, atmospheric cinematic lighting, slightly stylized 3D miniature diorama,
+      premium modern aesthetic, no text, no logos, no watermark."
+
+      Scene 6:
+      "A stylish cozy personal hobby room presented as a miniature gallery. A slim male
+      anthropomorphic fox moves between small visual scenes representing his hobbies: streaming,
+      digital drawing, 3D modeling, video editing, gaming, cycling, swimming, nature and enjoying
+      good food. Include small framed artworks, a 3D model on a desk, a bicycle helmet, game
+      controller, sketchbook, headphones and a window looking onto greenery. Dark charcoal palette,
+      warm lighting, subtle red and mint accents, cinematic depth of field, high-quality stylized
+      3D diorama, personal and inviting, no text, no logos, no watermark."
+
+      Scene 7:
+      "A quiet cinematic final scene in the same dark cozy miniature world. A slim male
+      anthropomorphic fox stands near a warm desk light and a simple communication terminal,
+      looking toward an open path leading outside. The atmosphere is calm, creative and welcoming,
+      suggesting an invitation to get in touch. Dark charcoal colors, warm lamp light, subtle red
+      and mint accents, cinematic depth of field, high-quality stylized 3D diorama, peaceful
+      portfolio ending, no text, no logos, no watermark."
+    -->
+
     <!-- SCENE 1 -->
     <section class="scene" id="scene-1">
       <div class="scene-content">
-        <div class="scene-number reveal from-left">01 / 06</div>
-        <p class="eyebrow reveal from-left delay-1" data-i18n="s1.eyebrow">Привет, я Антон</p>
+        <div class="scene-number reveal from-left">01 / 07</div>
+        <p class="eyebrow reveal from-left delay-1" data-i18n="s1.eyebrow">Привет, давай знакомиться!</p>
         <h1 class="reveal from-left delay-2">
-          <span data-i18n="s1.title">Тоша<br>или Квантум.</span>
+          <span data-i18n="s1.title">QUANTUM0</span>
         </h1>
-        <p class="lead reveal from-right delay-3" data-i18n="s1.lead">
-          Backend-разработчик, VTuber и человек, который любит превращать странные идеи
-          в работающие штуки.
+        <p class="small-copy reveal from-left delay-3" data-i18n="s1.copy">Также, Антон, или, для друзей, просто Тоша.</p>
+        <p class="lead reveal from-right delay-4" data-i18n="s1.lead">
+          Backend-разработчик, стример и человек, которому нравится придумывать, творить и воплощать идеи в жизнь.
         </p>
 
         <div class="tags reveal from-bottom delay-4">
           <span class="tag">Python</span>
           <span class="tag">Backend</span>
           <span class="tag">Twitch</span>
-          <span class="tag">VTuber</span>
+          <span class="tag">Streaming</span>
           <span class="tag">Open Source</span>
           <span class="tag">IoT</span>
+          <span class="tag">GameDev</span>
         </div>
       </div>
     </section>
@@ -657,7 +783,7 @@
     <!-- SCENE 2 -->
     <section class="scene" id="scene-2">
       <div class="scene-content">
-        <div class="scene-number reveal from-right">02 / 06</div>
+        <div class="scene-number reveal from-right">02 / 07</div>
         <p class="eyebrow reveal from-right delay-1" data-i18n="s2.eyebrow">Engineering</p>
         <h2 class="reveal from-right delay-2" data-i18n="s2.title">Я люблю<br>строить системы.</h2>
         <p class="lead reveal from-left delay-3" data-i18n="s2.lead">
@@ -665,8 +791,12 @@
           очереди, интеграции и всё то, что обычно скрыто за красивым интерфейсом.
         </p>
         <p class="small-copy reveal from-left delay-4" data-i18n="s2.copy">
-          Основной стек — Python, FastAPI, SQLAlchemy, PostgreSQL, Kafka, Docker и Linux.
-          Особенно интересно разбираться в системах, где много частей должны работать вместе.
+          Основной стек — Python, FastAPI, SQLAlchemy, PostgreSQL, Kafka, Docker и Linux, но бэкендом я не ограничиваюсь.
+          Могу спроектировать систему целиком: разработать API и написать backend, собрать (какой-никакой) frontend,
+          настроить интеграции с внешними сервисами, собрать устройство, которое общается с сервером,
+          поднять и развернуть сам сервер и настроить CI/CD. Во многом интересно разбираться, от того и знаю многое, но поверхностно,
+          зато могу собрать разные части в единую систему - даже если в отдельных областях мне ещё есть куда расти.
+          Тем не менее, основным направлением для себя выбрать Backend.
         </p>
       </div>
     </section>
@@ -674,7 +804,7 @@
     <!-- SCENE 3 -->
     <section class="scene" id="scene-3">
       <div class="scene-content">
-        <div class="scene-number reveal from-left">03 / 06</div>
+        <div class="scene-number reveal from-left">03 / 07</div>
         <p class="eyebrow reveal from-left delay-1" data-i18n="s3.eyebrow">Experience</p>
         <h2 class="reveal from-left delay-2" data-i18n="s3.title">Путь<br>разработчика.</h2>
 
@@ -701,10 +831,17 @@
             </div>
           </div>
           <div class="timeline-item">
-            <div class="timeline-year">Earlier</div>
+            <div class="timeline-year">2021 — 2022</div>
             <div>
-              <div class="timeline-title">Yandex · Rubetek · KR.Digital</div>
-              <div class="timeline-desc" data-i18n="s3.earlier">Analytics, smart home, backend and engineering.</div>
+              <div class="timeline-title">Yandex</div>
+              <div class="timeline-desc" data-i18n="s3.yandex">Backend developer at Yandex on project Datalens.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2019 — 2021</div>
+            <div>
+              <div class="timeline-title">Rubetek</div>
+              <div class="timeline-desc" data-i18n="s3.rubetek">Developer-engineer at Smart Home project with IoT Firmwares.</div>
             </div>
           </div>
         </div>
@@ -714,21 +851,30 @@
     <!-- SCENE 4 -->
     <section class="scene" id="scene-4">
       <div class="scene-content">
-        <div class="scene-number reveal from-right">04 / 06</div>
-        <p class="eyebrow reveal from-right delay-1" data-i18n="s4.eyebrow">Things I built</p>
-        <h2 class="reveal from-right delay-2" data-i18n="s4.title">Иногда я просто<br>делаю штуки.</h2>
-
-        <div class="cards reveal from-bottom delay-3">
+        <div class="scene-number reveal from-right">04 / 07</div>
+        <p class="eyebrow reveal from-right delay-1" data-i18n="s4.eyebrow">Things I built | Pet-projects</p>
+        <h2 class="reveal from-right delay-2" data-i18n="s4.title">В свободное время<br>я тоже что-то создаю.</h2>
+        <p class="small-copy reveal from-left delay-3" data-i18n="s4.lead">
+          Пет-проекты помогают мне воплощать собственные идеи, пробовать новые технологии
+          и продолжать развиваться вне рабочих задач.
+        </p>
+        <div class="cards reveal from-bottom delay-4">
           <a class="card" href="https://bot.quantum0.ru" target="_blank" rel="noopener">
             <div class="card-icon">↗</div>
-            <h3>Quantum075Bot</h3>
-            <p data-i18n="s4.bot">Twitch-бот с чат-командами, EventSub, MemeAlerts и собственными сервисами.</p>
+            <h3>Quantum0's Twitch Bot</h3>
+            <p data-i18n="s4.bot">Twitch-бот с чат-командами, интеграцией с MemeAlerts и интерактивными оверлеями.</p>
+          </a>
+
+          <a class="card" href="https://rmb.quantum0.ru" target="_blank" rel="noopener">
+            <div class="card-icon">↗</div>
+            <h3>Unity Game</h3>
+            <p data-i18n="s4.rmb">Игра про катание шарика, сделанная в Unity.</p>
           </a>
 
           <a class="card" href="https://resizer.quantum0.ru" target="_blank" rel="noopener">
             <div class="card-icon">↗</div>
             <h3>Image Resizer</h3>
-            <p data-i18n="s4.resizer">Небольшой сервис для быстрой работы с изображениями.</p>
+            <p data-i18n="s4.resizer">Небольшой сервис для ресайза изображений.</p>
           </a>
 
           <div class="card">
@@ -743,12 +889,13 @@
     <!-- SCENE 5 -->
     <section class="scene" id="scene-5">
       <div class="scene-content">
-        <div class="scene-number reveal from-left">05 / 06</div>
+        <div class="scene-number reveal from-left">05 / 07</div>
         <p class="eyebrow reveal from-left delay-1">Quantum075</p>
-        <h2 class="reveal from-left delay-2" data-i18n="s5.title">После работы<br>я становлюсь VTuber.</h2>
+        <h2 class="reveal from-left delay-2" data-i18n="s5.title">Вне работы я занимаюсь стримингом.</h2>
         <p class="lead reveal from-right delay-3" data-i18n="s5.lead">
-          Стримлю игры, общаюсь, экспериментирую с OBS и своими сервисами.
-          Особенно люблю хорроры, Dead by Daylight, инди-игры и совместные забеги с друзьями.
+          Стриминг — это мой способ отдыхать, получать удовольствие от игр и одновременно
+          развивать навыки коммуникации. Здесь я общаюсь, экспериментирую с OBS и своими сервисами.
+          Играю чаще всего в хорроры, Dead by Daylight, инди-игры и кооп-игры с друзьями.
         </p>
 
         <div class="cta-row reveal from-bottom delay-4">
@@ -763,23 +910,40 @@
     <!-- SCENE 6 -->
     <section class="scene" id="scene-6">
       <div class="scene-content">
-        <div class="scene-number reveal from-right">06 / 06</div>
-        <p class="eyebrow reveal from-right delay-1" data-i18n="s6.eyebrow">Just Anton</p>
-        <h2 class="reveal from-right delay-2" data-i18n="s6.title">В общем,<br>я просто люблю делать.</h2>
-        <p class="lead reveal from-left delay-3" data-i18n="s6.lead">
-          Код, маленькие сервисы, стримы, странные идеи и вещи, которые иногда вообще
-          не имеют практического смысла.
-        </p>
-        <p class="small-copy reveal from-left delay-4" data-i18n="s6.copy">
-          Когда-то я хотел делать игры. Потом были Arduino и умный дом, backend,
-          open source и VTubing. Похоже, общий знаменатель у всего этого один:
-          мне нравится превращать идеи в что-то настоящее.
-        </p>
+        <div class="scene-number reveal from-right">06 / 07</div>
+        <p class="eyebrow reveal from-right delay-1" data-i18n="s6.eyebrow">Just Me</p>
+        <h2 class="reveal from-right delay-2" data-i18n="s6.title">Мне нравится заниматься творчеством<br>и пробовать разное.</h2>
+        <!-- TODO: Сюда вставить это:
+         <div class="cards reveal from-bottom delay-3">
+          <!-- Replace each card's icon with an image later if needed. Suggested files:
+               images/hobby-streaming.jpg, images/hobby-drawing.jpg, images/hobby-3d.jpg,
+               images/hobby-food.jpg, images/hobby-nature.jpg, images/hobby-gaming.jpg -- >
+          <div class="card"><div class="card-icon">◉</div><h3 data-i18n="hobby.streaming">Стриминг</h3><p data-i18n="hobby.streaming.desc">Игры, общение и эксперименты с контентом.</p></div>
+          <div class="card"><div class="card-icon">✦</div><h3 data-i18n="hobby.art">Рисование и анимация</h3><p data-i18n="hobby.art.desc">Пробовал себя в рисунке, анимации и создании визуальных вещей.</p></div>
+          <div class="card"><div class="card-icon">◇</div><h3 data-i18n="hobby.3d">3D-моделирование</h3><p data-i18n="hobby.3d.desc">Интересно создавать вещи не только кодом.</p></div>
+          <div class="card"><div class="card-icon">⌁</div><h3 data-i18n="hobby.food">Вкусно поесть</h3><p data-i18n="hobby.food.desc">Хорошая еда — тоже важная часть отдыха.</p></div>
+          <div class="card"><div class="card-icon">↗</div><h3 data-i18n="hobby.outdoors">Природа и движение</h3><p data-i18n="hobby.outdoors.desc">Велосипед, прогулки, природа и просто выбраться из дома.</p></div>
+          <div class="card"><div class="card-icon">▣</div><h3 data-i18n="hobby.games">Игры</h3><p data-i18n="hobby.games.desc">Dead by Daylight, League of Legends и всё, во что хочется поиграть.</p></div>
+        </div>
+        -->
+      </div>
+    </section>
+
+    <!-- SCENE 7 -->
+    <section class="scene" id="scene-7">
+      <div class="scene-content">
+        <div class="scene-number reveal from-right">07 / 07</div>
+        <p class="eyebrow reveal from-right delay-1" data-i18n="s7.eyebrow">Contact</p>
+        <h2 class="reveal from-right delay-2" data-i18n="s7.title">Где меня найти.</h2>
 
         <div class="contacts reveal from-bottom delay-5">
           <a class="contact main" href="https://t.me/quantum0" target="_blank" rel="noopener">
             <span class="contact-label" data-i18n="contact.main">Основная связь</span>
             <span class="contact-value">Telegram · @quantum0</span>
+          </a>
+          <a class="contact" href="https://www.linkedin.com/in/quantum0/" target="_blank" rel="noopener">
+            <span class="contact-label">Work</span>
+            <span class="contact-value">Linkedin</span>
           </a>
           <a class="contact" href="https://github.com/Quantum0" target="_blank" rel="noopener">
             <span class="contact-label">Code</span>
@@ -789,9 +953,9 @@
             <span class="contact-label">Streaming</span>
             <span class="contact-value">Twitch</span>
           </a>
-          <a class="contact" href="mailto:hello@quantum0.ru">
-            <span class="contact-label">Email</span>
-            <span class="contact-value">hello@quantum0.ru</span>
+          <a class="contact" href="mailto:quantum0@mail.ru">
+            <span class="contact-label">E-mail <i>(Читаю очень редко!)</i></span>
+            <span class="contact-value">quantum0@mail.ru</span>
           </a>
         </div>
       </div>
@@ -814,16 +978,18 @@
         "s3.vk": "Backend-разработка, интеграции и сервисы.",
         "s3.dis": "Backend-разработка внутри VK.",
         "s3.pushkin": "Backend-разработчик в Nota.Media / VK Team.",
-        "s3.earlier": "Аналитика, умный дом, backend и инженерия.",
-        "s4.eyebrow": "Things I built",
-        "s4.title": "Иногда я просто<br>делаю штуки.",
+        "s3.yandex": "Backend-разработчик в Yandex на проекте Datalens.",
+        "s3.rubetek": "Инженер-программист на проекте Умный Дом, занимался разработкой прошивок устройств.",
+        "s4.eyebrow": "Штуки, которые я делаю | Пет-проекты",
+        "s4.title": "В свободное время<br>я тоже что-то создаю.",
         "s4.bot": "Twitch-бот с чат-командами, EventSub, MemeAlerts и собственными сервисами.",
-        "s4.resizer": "Небольшой сервис для быстрой работы с изображениями.",
+        "s4.rmb": "Игра про катание шарика, сделанная в Unity.",
+        "s4.resizer": "Небольшой сервис для ресайза изображений.",
         "s4.oss": "Небольшие вклады в open-source проекты и инструменты, которыми пользуюсь сам.",
-        "s5.title": "После работы<br>я становлюсь VTuber.",
-        "s5.lead": "Стримлю игры, общаюсь, экспериментирую с OBS и своими сервисами. Особенно люблю хорроры, Dead by Daylight, инди-игры и совместные забеги с друзьями.",
-        "s6.eyebrow": "Just Anton",
-        "s6.title": "В общем,<br>я просто люблю делать.",
+        "s5.title": "Вне работы я занимаюсь стримингом.",
+        "s5.lead": "Стриминг — это мой способ отдыхать, получать удовольствие от игр и одновременно развивать навыки коммуникации. Здесь я общаюсь, экспериментирую с OBS и своими сервисами. Играю чаще всего в хорроры, Dead by Daylight, инди-игры и кооп-игры с друзьями.",
+        "s6.eyebrow": "Просто Я",
+        "s6.title": "Мне нравится заниматься творчеством<br>и пробовать разное.",
         "s6.lead": "Код, маленькие сервисы, стримы, странные идеи и вещи, которые иногда вообще не имеют практического смысла.",
         "s6.copy": "Когда-то я хотел делать игры. Потом были Arduino и умный дом, backend, open source и VTubing. Похоже, общий знаменатель у всего этого один: мне нравится превращать идеи в что-то настоящее.",
         "contact.main": "Основная связь"
@@ -843,15 +1009,17 @@
         "s3.vk": "Backend development, integrations and services.",
         "s3.dis": "Backend development inside VK.",
         "s3.pushkin": "Backend developer at Nota.Media / VK Team.",
-        "s3.earlier": "Analytics, smart home, backend and engineering.",
-        "s4.eyebrow": "Things I built",
-        "s4.title": "Sometimes I just<br>build things.",
+        "s3.yandex": "Backend developer at Yandex on project Datalens.",
+        "s3.rubetek": "Developer-engineer at Smart Home project with IoT Firmwares.",
+        "s4.eyebrow": "Things I built | Pet-projects",
+        "s4.title": "In my free time<br>I'm also making things.",
         "s4.bot": "A Twitch bot with chat commands, EventSub, MemeAlerts and custom services.",
-        "s4.resizer": "A small service for quickly working with images.",
+        "s4.rmb": "Some small WebGL game in Unity.",
+        "s4.resizer": "A small service for quickly resizing images.",
         "s4.oss": "Small contributions to open-source projects and tools I use myself.",
         "s5.title": "After work,<br>I become a VTuber.",
         "s5.lead": "I stream games, hang out, experiment with OBS and build my own tools. I especially enjoy horror games, Dead by Daylight, indie games and co-op runs with friends.",
-        "s6.eyebrow": "Just Anton",
+        "s6.eyebrow": "Just Me",
         "s6.title": "Basically,<br>I just like making things.",
         "s6.lead": "Code, small services, streams, weird ideas and things that sometimes have absolutely no practical purpose.",
         "s6.copy": "I wanted to make games when I was younger. Then came Arduino and smart home projects, backend, open source and VTubing. There seems to be one common thread: I like turning ideas into something real.",
@@ -968,6 +1136,34 @@
         }, 750);
       }
     }, { passive: false });
+
+        document.querySelectorAll(".external-warning").forEach(link => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        pendingExternalUrl = link.href;
+        warningOverlay.classList.add("is-open");
+        warningOverlay.setAttribute("aria-hidden", "false");
+      });
+    });
+
+    function closeWarning() {
+      warningOverlay.classList.remove("is-open");
+      warningOverlay.setAttribute("aria-hidden", "true");
+      pendingExternalUrl = null;
+    }
+
+    warningConfirm.addEventListener("click", () => {
+      if (pendingExternalUrl) {
+        const url = pendingExternalUrl;
+        closeWarning();
+        window.open(url, "_blank", "noopener");
+      }
+    });
+
+    warningCancel.addEventListener("click", closeWarning);
+    warningOverlay.addEventListener("click", (event) => {
+      if (event.target === warningOverlay) closeWarning();
+    });
 
     // Keyboard navigation.
     window.addEventListener("keydown", (event) => {
