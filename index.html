@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Quantum0 — backend developer, VTuber and maker of things." />
+  <title>Quantum0 — Anton / Тоша</title>
+
+  <style>
+    :root {
+      --bg: #111111;
+      --bg-soft: #171717;
+      --text: #eeeeee;
+      --muted: #999999;
+      --accent: #d13521;
+      --accent-soft: rgba(209, 53, 33, .18);
+      --mint: #9ee8c1;
+      --line: rgba(255,255,255,.12);
+      --page-padding: clamp(24px, 6vw, 96px);
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    /* ---------- Global UI ---------- */
+
+    .site-nav {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px var(--page-padding);
+      pointer-events: none;
+    }
+
+    .brand,
+    .lang-switcher {
+      pointer-events: auto;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .brand-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 22px rgba(209,53,33,.65);
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(17,17,17,.55);
+      backdrop-filter: blur(14px);
+    }
+
+    .lang-switcher button {
+      border: 0;
+      border-radius: 999px;
+      padding: 7px 11px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      transition: .25s ease;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+
+    .lang-switcher button.active {
+      color: var(--text);
+      background: rgba(255,255,255,.1);
+    }
+
+    .progress {
+      position: fixed;
+      z-index: 101;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      background: var(--accent);
+      box-shadow: 0 0 16px rgba(209,53,33,.65);
+      transition: width .4s var(--ease);
+    }
+
+    .scroll-hint {
+      position: fixed;
+      z-index: 50;
+      right: var(--page-padding);
+      bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      transition: opacity .5s ease;
+    }
+
+    .scroll-hint-line {
+      width: 42px;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    /* ---------- Scenes ---------- */
+
+    main {
+      width: 100%;
+    }
+
+    .scene {
+      position: relative;
+      min-height: 100svh;
+      height: 100svh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      overflow: hidden;
+      isolation: isolate;
+      display: flex;
+      align-items: center;
+      padding: 100px var(--page-padding);
+      background:
+        radial-gradient(circle at 70% 30%, rgba(209,53,33,.07), transparent 32%),
+        linear-gradient(135deg, #111 0%, #151515 100%);
+    }
+
+    /* Replace this pseudo-background with:
+       background-image: url("images/scene-01.jpg");
+       or add <div class="scene-bg">...</div>.
+    */
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(90deg, rgba(17,17,17,.92) 0%, rgba(17,17,17,.64) 48%, rgba(17,17,17,.3) 100%);
+      pointer-events: none;
+    }
+
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(158,232,193,.035), transparent 25%),
+        radial-gradient(circle at 90% 20%, rgba(209,53,33,.06), transparent 28%);
+    }
+
+    .scene-content {
+      width: min(760px, 100%);
+    }
+
+    .scene-number {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 26px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .scene-number::after {
+      content: "";
+      width: 42px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1, h2 {
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: -.045em;
+      line-height: .95;
+    }
+
+    h1 {
+      max-width: 850px;
+      font-size: clamp(52px, 9vw, 132px);
+    }
+
+    h2 {
+      max-width: 800px;
+      font-size: clamp(46px, 7vw, 96px);
+    }
+
+    .lead {
+      max-width: 620px;
+      margin: 30px 0 0;
+      color: #c8c8c8;
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.5;
+    }
+
+    .small-copy {
+      max-width: 570px;
+      margin-top: 22px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 28px;
+    }
+
+    .tag {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #d6d6d6;
+      background: rgba(255,255,255,.035);
+      font-size: 12px;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+      transition: transform .25s var(--ease), background .25s ease, border-color .25s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,.25);
+      background: rgba(255,255,255,.09);
+    }
+
+    .button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .button.primary:hover {
+      background: #e13b26;
+    }
+
+    /* ---------- Timeline ---------- */
+
+    .timeline {
+      display: grid;
+      gap: 0;
+      margin-top: 34px;
+      max-width: 720px;
+      border-top: 1px solid var(--line);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 24px;
+      padding: 17px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .timeline-year {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    .timeline-title {
+      font-weight: 700;
+    }
+
+    .timeline-desc {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ---------- Project cards ---------- */
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 34px;
+      max-width: 980px;
+    }
+
+    .card {
+      min-height: 190px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.035);
+      backdrop-filter: blur(8px);
+      transition: transform .35s var(--ease), border-color .35s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,255,255,.25);
+    }
+
+    .card-icon {
+      color: var(--accent);
+      font-size: 20px;
+    }
+
+    .card h3 {
+      margin: 26px 0 9px;
+      font-size: 17px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* ---------- Contact ---------- */
+
+    .contacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .contact {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 150px;
+      padding: 15px 17px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255,255,255,.035);
+      transition: .25s ease;
+    }
+
+    .contact:hover {
+      border-color: rgba(255,255,255,.24);
+      transform: translateY(-2px);
+    }
+
+    .contact.main {
+      border-color: rgba(209,53,33,.5);
+      background: var(--accent-soft);
+    }
+
+    .contact-label {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .contact-value {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    /* ---------- Reveal animation ---------- */
+
+    .reveal {
+      opacity: 0;
+      transition:
+        opacity .8s ease,
+        transform 1s var(--ease);
+      will-change: opacity, transform;
+    }
+
+    .from-left { transform: translateX(-90px); }
+    .from-right { transform: translateX(90px); }
+    .from-bottom { transform: translateY(55px); }
+
+    .scene.is-visible .reveal {
+      opacity: 1;
+      transform: translate(0);
+    }
+
+    .scene.is-visible .delay-1 { transition-delay: .08s; }
+    .scene.is-visible .delay-2 { transition-delay: .16s; }
+    .scene.is-visible .delay-3 { transition-delay: .24s; }
+    .scene.is-visible .delay-4 { transition-delay: .32s; }
+    .scene.is-visible .delay-5 { transition-delay: .40s; }
+
+    /* ---------- Side navigation ---------- */
+
+    .side-nav {
+      position: fixed;
+      z-index: 90;
+      top: 50%;
+      right: var(--page-padding);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transform: translateY(-50%);
+    }
+
+    .side-dot {
+      width: 7px;
+      height: 7px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,.25);
+      cursor: pointer;
+      transition: .3s var(--ease);
+    }
+
+    .side-dot.active {
+      height: 26px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    /* ---------- Responsive ---------- */
+
+    @media (max-width: 800px) {
+      html {
+        scroll-snap-type: y proximity;
+      }
+
+      .scene {
+        padding-top: 100px;
+        padding-bottom: 70px;
+        align-items: flex-start;
+        overflow-y: auto;
+      }
+
+      .scene-content {
+        padding-bottom: 30px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-item {
+        grid-template-columns: 72px 1fr;
+        gap: 12px;
+      }
+
+      .side-nav {
+        display: none;
+      }
+
+      .scroll-hint {
+        right: 24px;
+      }
+
+      h1 {
+        font-size: clamp(48px, 15vw, 82px);
+      }
+
+      h2 {
+        font-size: clamp(43px, 13vw, 72px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .reveal {
+        transition: opacity .2s ease;
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-nav">
+    <a class="brand" href="#scene-1" aria-label="Quantum0">
+      <span class="brand-dot"></span>
+      QUANTUM0
+    </a>
+
+    <div class="lang-switcher" aria-label="Language">
+      <button type="button" data-lang="ru" class="active">RU</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <div class="progress">
+    <div class="progress-bar"></div>
+  </div>
+
+  <nav class="side-nav" aria-label="Scenes">
+    <button class="side-dot active" data-target="scene-1" aria-label="Scene 1"></button>
+    <button class="side-dot" data-target="scene-2" aria-label="Scene 2"></button>
+    <button class="side-dot" data-target="scene-3" aria-label="Scene 3"></button>
+    <button class="side-dot" data-target="scene-4" aria-label="Scene 4"></button>
+    <button class="side-dot" data-target="scene-5" aria-label="Scene 5"></button>
+    <button class="side-dot" data-target="scene-6" aria-label="Scene 6"></button>
+  </nav>
+
+  <div class="scroll-hint">
+    <span data-i18n="scroll">scroll to explore</span>
+    <span class="scroll-hint-line"></span>
+  </div>
+
+  <main>
+    <!--
+      BACKGROUND IMAGE PROMPTS
+
+      Scene 1:
+      "A dark cozy miniature diorama representing a modern developer's personal workspace,
+      slightly stylized 3D, matte materials, cinematic soft lighting. A slim male anthropomorphic
+      fox with dark brown-black fur, light gray-white markings, white paws and tail tip, subtle
+      deep red markings, sitting at a desk with a laptop and two monitors. Tiny hints of code,
+      Twitch interface and creative tools around the room. Warm practical lights, subtle red and
+      mint-green accents, dark charcoal environment, premium modern portfolio aesthetic, cinematic
+      depth of field, no text, no logos, no watermark."
+
+      Scene 2:
+      "A dark futuristic miniature city representing backend engineering. A slim male anthropomorphic
+      fox developer walks through a tiny city made of server buildings and glowing data routes.
+      Docker containers represented as modular buildings, Kafka as flowing streams of light,
+      APIs as interconnected roads, Python and FastAPI suggested through abstract visual motifs.
+      Dark charcoal palette, restrained red and mint accents, cinematic soft volumetric lighting,
+      sophisticated 3D diorama, matte materials, no text, no logos, no watermark."
+
+      Scene 3:
+      "A cinematic miniature railway / road through a dark modern world representing a software
+      developer career. A slim male anthropomorphic fox walks beside a sequence of distinct
+      stations representing different stages of his career: engineering, smart home, analytics,
+      culture and tickets. Each station has its own subtle visual identity while remaining in the
+      same dark cozy world. Red and mint accent lights, warm atmospheric lighting, stylized 3D
+      diorama, cinematic depth of field, no text, no logos, no watermark."
+
+      Scene 4:
+      "A cozy dark miniature technology workshop filled with personal software projects. A slim
+      male anthropomorphic fox works on a small glowing service hub connected to Twitch chat,
+      Telegram messages and cloud-like services. Around him are tiny server racks, a computer,
+      an image-resizing machine, IoT boards and cables. The scene feels like a playful inventor's
+      workshop rather than a corporate office. Dark charcoal palette, red and subtle mint accents,
+      cinematic 3D diorama, soft warm lighting, no text, no logos, no watermark."
+
+      Scene 5:
+      "A cozy dark VTuber streaming room at night. A slim male anthropomorphic fox with dark
+      brown-black fur and light markings sits in front of a gaming PC and multiple monitors,
+      wearing a headset and streaming. One screen suggests a horror game, another shows a live
+      streaming interface, microphone and small desk lights nearby. Warm dark room, subtle red
+      and mint accents, atmospheric cinematic lighting, slightly stylized 3D miniature diorama,
+      premium modern aesthetic, no text, no logos, no watermark."
+
+      Scene 6:
+      "A quiet cozy personal room at night, the final scene of a personal developer portfolio.
+      A slim male anthropomorphic fox relaxes in a chair near a computer, surrounded by books,
+      game controllers, small electronics, sketches and strange little objects collected over
+      time. The room feels personal, curious and slightly whimsical, not corporate. Dark charcoal
+      colors, warm lamp light, subtle red and mint accents, cinematic depth of field, high-quality
+      stylized 3D diorama, peaceful ending, no text, no logos, no watermark."
+    -->
+
+    <!-- SCENE 1 -->
+    <section class="scene" id="scene-1">
+      <div class="scene-content">
+        <div class="scene-number reveal from-left">01 / 06</div>
+        <p class="eyebrow reveal from-left delay-1" data-i18n="s1.eyebrow">Привет, я Антон</p>
+        <h1 class="reveal from-left delay-2">
+          <span data-i18n="s1.title">Тоша<br>или Квантум.</span>
+        </h1>
+        <p class="lead reveal from-right delay-3" data-i18n="s1.lead">
+          Backend-разработчик, VTuber и человек, который любит превращать странные идеи
+          в работающие штуки.
+        </p>
+
+        <div class="tags reveal from-bottom delay-4">
+          <span class="tag">Python</span>
+          <span class="tag">Backend</span>
+          <span class="tag">Twitch</span>
+          <span class="tag">VTuber</span>
+          <span class="tag">Open Source</span>
+          <span class="tag">IoT</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 2 -->
+    <section class="scene" id="scene-2">
+      <div class="scene-content">
+        <div class="scene-number reveal from-right">02 / 06</div>
+        <p class="eyebrow reveal from-right delay-1" data-i18n="s2.eyebrow">Engineering</p>
+        <h2 class="reveal from-right delay-2" data-i18n="s2.title">Я люблю<br>строить системы.</h2>
+        <p class="lead reveal from-left delay-3" data-i18n="s2.lead">
+          Сейчас я занимаюсь backend-разработкой: API, микросервисы, базы данных,
+          очереди, интеграции и всё то, что обычно скрыто за красивым интерфейсом.
+        </p>
+        <p class="small-copy reveal from-left delay-4" data-i18n="s2.copy">
+          Основной стек — Python, FastAPI, SQLAlchemy, PostgreSQL, Kafka, Docker и Linux.
+          Особенно интересно разбираться в системах, где много частей должны работать вместе.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCENE 3 -->
+    <section class="scene" id="scene-3">
+      <div class="scene-content">
+        <div class="scene-number reveal from-left">03 / 06</div>
+        <p class="eyebrow reveal from-left delay-1" data-i18n="s3.eyebrow">Experience</p>
+        <h2 class="reveal from-left delay-2" data-i18n="s3.title">Путь<br>разработчика.</h2>
+
+        <div class="timeline reveal from-right delay-3">
+          <div class="timeline-item">
+            <div class="timeline-year">2025 — now</div>
+            <div>
+              <div class="timeline-title">VK Tickets</div>
+              <div class="timeline-desc" data-i18n="s3.vk">Backend development, integrations and services.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2024 — 2025</div>
+            <div>
+              <div class="timeline-title">DIS VK</div>
+              <div class="timeline-desc" data-i18n="s3.dis">Backend development inside VK.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2022 — 2024</div>
+            <div>
+              <div class="timeline-title">Pushkin Card</div>
+              <div class="timeline-desc" data-i18n="s3.pushkin">Backend developer at Nota.Media / VK Team.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">Earlier</div>
+            <div>
+              <div class="timeline-title">Yandex · Rubetek · KR.Digital</div>
+              <div class="timeline-desc" data-i18n="s3.earlier">Analytics, smart home, backend and engineering.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 4 -->
+    <section class="scene" id="scene-4">
+      <div class="scene-content">
+        <div class="scene-number reveal from-right">04 / 06</div>
+        <p class="eyebrow reveal from-right delay-1" data-i18n="s4.eyebrow">Things I built</p>
+        <h2 class="reveal from-right delay-2" data-i18n="s4.title">Иногда я просто<br>делаю штуки.</h2>
+
+        <div class="cards reveal from-bottom delay-3">
+          <a class="card" href="https://bot.quantum0.ru" target="_blank" rel="noopener">
+            <div class="card-icon">↗</div>
+            <h3>Quantum075Bot</h3>
+            <p data-i18n="s4.bot">Twitch-бот с чат-командами, EventSub, MemeAlerts и собственными сервисами.</p>
+          </a>
+
+          <a class="card" href="https://resizer.quantum0.ru" target="_blank" rel="noopener">
+            <div class="card-icon">↗</div>
+            <h3>Image Resizer</h3>
+            <p data-i18n="s4.resizer">Небольшой сервис для быстрой работы с изображениями.</p>
+          </a>
+
+          <div class="card">
+            <div class="card-icon">⌁</div>
+            <h3>Open Source</h3>
+            <p data-i18n="s4.oss">Небольшие вклады в open-source проекты и инструменты, которыми пользуюсь сам.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 5 -->
+    <section class="scene" id="scene-5">
+      <div class="scene-content">
+        <div class="scene-number reveal from-left">05 / 06</div>
+        <p class="eyebrow reveal from-left delay-1">Quantum075</p>
+        <h2 class="reveal from-left delay-2" data-i18n="s5.title">После работы<br>я становлюсь VTuber.</h2>
+        <p class="lead reveal from-right delay-3" data-i18n="s5.lead">
+          Стримлю игры, общаюсь, экспериментирую с OBS и своими сервисами.
+          Особенно люблю хорроры, Dead by Daylight, инди-игры и совместные забеги с друзьями.
+        </p>
+
+        <div class="cta-row reveal from-bottom delay-4">
+          <a class="button primary" href="https://twitch.tv/quantum075" target="_blank" rel="noopener">Twitch ↗</a>
+          <a class="button" href="https://youtube.com/@quantum075" target="_blank" rel="noopener">YouTube ↗</a>
+          <a class="button" href="https://t.me/quantum0" target="_blank" rel="noopener">Telegram ↗</a>
+          <a class="button" href="https://www.tiktok.com/@quantum075" target="_blank" rel="noopener">TikTok ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 6 -->
+    <section class="scene" id="scene-6">
+      <div class="scene-content">
+        <div class="scene-number reveal from-right">06 / 06</div>
+        <p class="eyebrow reveal from-right delay-1" data-i18n="s6.eyebrow">Just Anton</p>
+        <h2 class="reveal from-right delay-2" data-i18n="s6.title">В общем,<br>я просто люблю делать.</h2>
+        <p class="lead reveal from-left delay-3" data-i18n="s6.lead">
+          Код, маленькие сервисы, стримы, странные идеи и вещи, которые иногда вообще
+          не имеют практического смысла.
+        </p>
+        <p class="small-copy reveal from-left delay-4" data-i18n="s6.copy">
+          Когда-то я хотел делать игры. Потом были Arduino и умный дом, backend,
+          open source и VTubing. Похоже, общий знаменатель у всего этого один:
+          мне нравится превращать идеи в что-то настоящее.
+        </p>
+
+        <div class="contacts reveal from-bottom delay-5">
+          <a class="contact main" href="https://t.me/quantum0" target="_blank" rel="noopener">
+            <span class="contact-label" data-i18n="contact.main">Основная связь</span>
+            <span class="contact-value">Telegram · @quantum0</span>
+          </a>
+          <a class="contact" href="https://github.com/Quantum0" target="_blank" rel="noopener">
+            <span class="contact-label">Code</span>
+            <span class="contact-value">GitHub</span>
+          </a>
+          <a class="contact" href="https://twitch.tv/quantum075" target="_blank" rel="noopener">
+            <span class="contact-label">Streaming</span>
+            <span class="contact-value">Twitch</span>
+          </a>
+          <a class="contact" href="mailto:hello@quantum0.ru">
+            <span class="contact-label">Email</span>
+            <span class="contact-value">hello@quantum0.ru</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const translations = {
+      ru: {
+        "scroll": "листай дальше",
+        "s1.eyebrow": "Привет, я Антон",
+        "s1.title": "Тоша<br>или Квантум.",
+        "s1.lead": "Backend-разработчик, VTuber и человек, который любит превращать странные идеи в работающие штуки.",
+        "s2.eyebrow": "Engineering",
+        "s2.title": "Я люблю<br>строить системы.",
+        "s2.lead": "Сейчас я занимаюсь backend-разработкой: API, микросервисы, базы данных, очереди, интеграции и всё то, что обычно скрыто за красивым интерфейсом.",
+        "s2.copy": "Основной стек — Python, FastAPI, SQLAlchemy, PostgreSQL, Kafka, Docker и Linux. Особенно интересно разбираться в системах, где много частей должны работать вместе.",
+        "s3.eyebrow": "Experience",
+        "s3.title": "Путь<br>разработчика.",
+        "s3.vk": "Backend-разработка, интеграции и сервисы.",
+        "s3.dis": "Backend-разработка внутри VK.",
+        "s3.pushkin": "Backend-разработчик в Nota.Media / VK Team.",
+        "s3.earlier": "Аналитика, умный дом, backend и инженерия.",
+        "s4.eyebrow": "Things I built",
+        "s4.title": "Иногда я просто<br>делаю штуки.",
+        "s4.bot": "Twitch-бот с чат-командами, EventSub, MemeAlerts и собственными сервисами.",
+        "s4.resizer": "Небольшой сервис для быстрой работы с изображениями.",
+        "s4.oss": "Небольшие вклады в open-source проекты и инструменты, которыми пользуюсь сам.",
+        "s5.title": "После работы<br>я становлюсь VTuber.",
+        "s5.lead": "Стримлю игры, общаюсь, экспериментирую с OBS и своими сервисами. Особенно люблю хорроры, Dead by Daylight, инди-игры и совместные забеги с друзьями.",
+        "s6.eyebrow": "Just Anton",
+        "s6.title": "В общем,<br>я просто люблю делать.",
+        "s6.lead": "Код, маленькие сервисы, стримы, странные идеи и вещи, которые иногда вообще не имеют практического смысла.",
+        "s6.copy": "Когда-то я хотел делать игры. Потом были Arduino и умный дом, backend, open source и VTubing. Похоже, общий знаменатель у всего этого один: мне нравится превращать идеи в что-то настоящее.",
+        "contact.main": "Основная связь"
+      },
+
+      en: {
+        "scroll": "scroll to explore",
+        "s1.eyebrow": "Hi, I'm Anton",
+        "s1.title": "Tosha<br>or Quantum.",
+        "s1.lead": "Backend developer, VTuber, and a person who enjoys turning weird ideas into working things.",
+        "s2.eyebrow": "Engineering",
+        "s2.title": "I like<br>building systems.",
+        "s2.lead": "I work on backend systems: APIs, microservices, databases, queues, integrations, and all the things usually hidden behind a polished interface.",
+        "s2.copy": "My main stack is Python, FastAPI, SQLAlchemy, PostgreSQL, Kafka, Docker and Linux. I especially enjoy figuring out systems where many moving parts have to work together.",
+        "s3.eyebrow": "Experience",
+        "s3.title": "A developer's<br>journey.",
+        "s3.vk": "Backend development, integrations and services.",
+        "s3.dis": "Backend development inside VK.",
+        "s3.pushkin": "Backend developer at Nota.Media / VK Team.",
+        "s3.earlier": "Analytics, smart home, backend and engineering.",
+        "s4.eyebrow": "Things I built",
+        "s4.title": "Sometimes I just<br>build things.",
+        "s4.bot": "A Twitch bot with chat commands, EventSub, MemeAlerts and custom services.",
+        "s4.resizer": "A small service for quickly working with images.",
+        "s4.oss": "Small contributions to open-source projects and tools I use myself.",
+        "s5.title": "After work,<br>I become a VTuber.",
+        "s5.lead": "I stream games, hang out, experiment with OBS and build my own tools. I especially enjoy horror games, Dead by Daylight, indie games and co-op runs with friends.",
+        "s6.eyebrow": "Just Anton",
+        "s6.title": "Basically,<br>I just like making things.",
+        "s6.lead": "Code, small services, streams, weird ideas and things that sometimes have absolutely no practical purpose.",
+        "s6.copy": "I wanted to make games when I was younger. Then came Arduino and smart home projects, backend, open source and VTubing. There seems to be one common thread: I like turning ideas into something real.",
+        "contact.main": "Main contact"
+      }
+    };
+
+    const langButtons = document.querySelectorAll("[data-lang]");
+    const translatable = document.querySelectorAll("[data-i18n]");
+    const scenes = [...document.querySelectorAll(".scene")];
+    const dots = [...document.querySelectorAll(".side-dot")];
+    const progressBar = document.querySelector(".progress-bar");
+    const scrollHint = document.querySelector(".scroll-hint");
+
+    let currentLang = "ru";
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+
+      translatable.forEach(el => {
+        const key = el.dataset.i18n;
+        if (translations[lang][key] !== undefined) {
+          el.innerHTML = translations[lang][key];
+        }
+      });
+
+      langButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === lang);
+      });
+
+      localStorage.setItem("quantum0-lang", lang);
+    }
+
+    langButtons.forEach(btn => {
+      btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+    });
+
+    dots.forEach(dot => {
+      dot.addEventListener("click", () => {
+        document.getElementById(dot.dataset.target)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+
+          const index = scenes.indexOf(entry.target);
+          dots.forEach((dot, i) => dot.classList.toggle("active", i === index));
+
+          if (index === scenes.length - 1) {
+            scrollHint.style.opacity = "0";
+          } else {
+            scrollHint.style.opacity = "1";
+          }
+        }
+      });
+    }, {
+      threshold: 0.55
+    });
+
+    scenes.forEach(scene => observer.observe(scene));
+
+    function updateProgress() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const value = max > 0 ? (window.scrollY / max) * 100 : 0;
+      progressBar.style.width = `${value}%`;
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
+    const savedLang = localStorage.getItem("quantum0-lang");
+    if (savedLang === "en" || savedLang === "ru") {
+      setLanguage(savedLang);
+    }
+
+    // Make wheel navigation land on the next/previous full scene.
+    // The native CSS scroll-snap handles the final alignment.
+    let wheelLocked = false;
+    let wheelTimer;
+
+    window.addEventListener("wheel", (event) => {
+      if (Math.abs(event.deltaY) < 8 || wheelLocked) return;
+
+      const currentIndex = scenes.findIndex(scene => {
+        const rect = scene.getBoundingClientRect();
+        return rect.top >= -window.innerHeight * 0.45 &&
+               rect.top <= window.innerHeight * 0.45;
+      });
+
+      if (currentIndex === -1) return;
+
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const nextIndex = Math.max(0, Math.min(scenes.length - 1, currentIndex + direction));
+
+      if (nextIndex !== currentIndex) {
+        event.preventDefault();
+        wheelLocked = true;
+
+        scenes[nextIndex].scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+        clearTimeout(wheelTimer);
+        wheelTimer = setTimeout(() => {
+          wheelLocked = false;
+        }, 750);
+      }
+    }, { passive: false });
+
+    // Keyboard navigation.
+    window.addEventListener("keydown", (event) => {
+      if (["ArrowDown", "PageDown", "ArrowUp", "PageUp", " "].includes(event.key)) {
+        event.preventDefault();
+
+        const currentIndex = scenes.findIndex(scene => {
+          const rect = scene.getBoundingClientRect();
+          return rect.top >= -window.innerHeight * 0.45 &&
+                 rect.top <= window.innerHeight * 0.45;
+        });
+
+        if (currentIndex === -1) return;
+
+        const direction = event.key === "ArrowUp" || event.key === "PageUp" ? -1 : 1;
+        const nextIndex = Math.max(0, Math.min(scenes.length - 1, currentIndex + direction));
+
+        scenes[nextIndex].scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    });
+  </script>
+</body>
+</html>
