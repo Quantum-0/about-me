@@ -220,7 +220,7 @@
     }
 
     .scene-content {
-      width: min(760px, 100%);
+      width: min(100%, clamp(760px, 70vw, 1200px));
     }
 
     .scene-number {
@@ -268,8 +268,12 @@
       font-size: clamp(46px, 7vw, 96px);
     }
 
+    .scene.compact-title h2 {
+      font-size: clamp(38px, 5vw, 64px);
+    }
+
     .lead {
-      max-width: 620px;
+      max-width: 720px;
       margin: 30px 0 0;
       color: #c8c8c8;
       font-size: clamp(17px, 2vw, 22px);
@@ -277,7 +281,7 @@
     }
 
     .small-copy {
-      max-width: 570px;
+      max-width: 680px;
       margin-top: 22px;
       color: var(--muted);
       line-height: 1.7;
@@ -340,7 +344,7 @@
     .timeline {
       display: grid;
       gap: 0;
-      margin-top: 34px;
+      margin-top: 24px;
       max-width: 720px;
       border-top: 1px solid var(--line);
     }
@@ -349,7 +353,7 @@
       display: grid;
       grid-template-columns: 110px 1fr;
       gap: 24px;
-      padding: 17px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--line);
     }
 
@@ -560,6 +564,44 @@
       margin-top: 24px;
     }
 
+    /* ---------- Scene tweaks ---------- */
+
+    #scene-2 .lead {
+      max-width: 780px;
+    }
+
+    #scene-2 .small-copy {
+      max-width: 900px;
+      line-height: 1.65;
+    }
+
+    #scene-4 .cards {
+      max-width: 1160px;
+    }
+
+    #scene-6 h2 {
+      font-size: clamp(30px, 3.6vw, 46px);
+    }
+
+    #scene-6 .cards {
+      margin-top: 26px;
+    }
+
+    #scene-6 .card {
+      min-height: 150px;
+      padding: 20px 22px;
+    }
+
+    #scene-6 .card h3 {
+      margin: 18px 0 7px;
+    }
+
+    @media (min-width: 1100px) {
+      #scene-4 .cards {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
     /* ---------- Responsive ---------- */
 
     @media (max-width: 800px) {
@@ -601,6 +643,14 @@
 
       h2 {
         font-size: clamp(43px, 13vw, 72px);
+      }
+
+      .scene.compact-title h2 {
+        font-size: clamp(38px, 11vw, 60px);
+      }
+
+      #scene-6 h2 {
+        font-size: clamp(30px, 9vw, 46px);
       }
     }
 
@@ -751,7 +801,7 @@
     </section>
 
     <!-- SCENE 2 -->
-    <section class="scene" id="scene-2">
+    <section class="scene compact-title" id="scene-2">
       <div class="scene-content">
         <div class="scene-number reveal from-right">02 / 07</div>
         <p class="eyebrow reveal from-right delay-1" data-i18n="s2.eyebrow">Engineering</p>
@@ -772,7 +822,7 @@
     </section>
 
     <!-- SCENE 3 -->
-    <section class="scene" id="scene-3">
+    <section class="scene compact-title" id="scene-3">
       <div class="scene-content">
         <div class="scene-number reveal from-left">03 / 07</div>
         <p class="eyebrow reveal from-left delay-1" data-i18n="s3.eyebrow">Experience</p>
@@ -819,7 +869,7 @@
     </section>
 
     <!-- SCENE 4 -->
-    <section class="scene" id="scene-4">
+    <section class="scene compact-title" id="scene-4">
       <div class="scene-content">
         <div class="scene-number reveal from-right">04 / 07</div>
         <p class="eyebrow reveal from-right delay-1" data-i18n="s4.eyebrow">Штуки, которые я делаю | Пет-проекты</p>
