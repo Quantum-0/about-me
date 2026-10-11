@@ -194,10 +194,21 @@
         linear-gradient(135deg, #111 0%, #151515 100%);
     }
 
-    /* Replace this pseudo-background with:
-       background-image: url("images/scene-01.jpg");
-       or add <div class="scene-bg">...</div>.
-    */
+    /* Scene backgrounds: images/<NN>_bg.png, loaded via JS when the file exists. */
+    .scene-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+
+    .scene-bg.is-loaded {
+      opacity: 1;
+    }
+
     .scene::before {
       content: "";
       position: absolute;
@@ -217,14 +228,6 @@
       background:
         radial-gradient(circle at 20% 80%, rgba(158,232,193,.035), transparent 25%),
         radial-gradient(circle at 90% 20%, rgba(209,53,33,.06), transparent 28%);
-    }
-
-    .scene-bg {
-      position: absolute;
-      inset: 0;
-      z-index: -3;
-      background-size: cover;
-      background-position: center;
     }
 
     .scene-content {
@@ -771,7 +774,7 @@
 
     <!-- SCENE 1 -->
     <section class="scene" id="scene-1">
-      <div class="scene-bg" style="background-image: url('images/fox-studio.jpg');"></div>
+      <div class="scene-bg" data-bg="01"></div>
       <div class="scene-content scene-split">
         <div>
           <div class="scene-number reveal from-left">01 / 07</div>
@@ -796,14 +799,14 @@
         </div>
 
         <figure class="scene-photo reveal from-right delay-5">
-          <img src="images/fox-studio.jpg" alt="Лис-программист в уютной студии за компьютером" loading="lazy" />
+          <img src="images/01_bg.png" alt="Лисёнок-разработчик в уютной студии за компьютером" loading="lazy" />
         </figure>
       </div>
     </section>
 
     <!-- SCENE 2 -->
     <section class="scene compact-title" id="scene-2">
-      <div class="scene-bg" style="background-image: url('images/work-office.jpg');"></div>
+      <div class="scene-bg" data-bg="02"></div>
       <div class="scene-content">
         <div class="scene-number reveal from-right">02 / 07</div>
         <p class="eyebrow reveal from-right delay-1" data-i18n="s2.eyebrow">Engineering</p>
@@ -812,25 +815,20 @@
           Сейчас я занимаюсь backend-разработкой: API, микросервисы, базы данных,
           очереди, интеграции и всё то, что обычно скрыто за красивым интерфейсом.
         </p>
-        <div class="split-row">
-          <p class="small-copy reveal from-left delay-4" data-i18n="s2.copy">
-            Основной стек — Python, FastAPI, SQLAlchemy, PostgreSQL, Kafka, Docker и Linux, но бэкендом я не ограничиваюсь.
-            Могу спроектировать систему целиком: разработать API и написать backend, собрать (какой-никакой) frontend,
-            настроить интеграции с внешними сервисами, собрать устройство, которое общается с сервером,
-            поднять и развернуть сам сервер и настроить CI/CD. Во многом интересно разбираться, от того и знаю многое, но поверхностно,
-            зато могу собрать разные части в единую систему — даже если в отдельных областях мне ещё есть куда расти.
-            Тем не менее, основным направлением для себя выбрать Backend.
-          </p>
-
-          <figure class="scene-photo reveal from-right delay-5">
-            <img src="images/work-office.jpg" alt="Разработчик у окна в современном офисе" loading="lazy" />
-          </figure>
-        </div>
+        <p class="small-copy reveal from-left delay-4" data-i18n="s2.copy">
+          Основной стек — Python, FastAPI, SQLAlchemy, PostgreSQL, Kafka, Docker и Linux, но бэкендом я не ограничиваюсь.
+          Могу спроектировать систему целиком: разработать API и написать backend, собрать (какой-никакой) frontend,
+          настроить интеграции с внешними сервисами, собрать устройство, которое общается с сервером,
+          поднять и развернуть сам сервер и настроить CI/CD. Во многом интересно разбираться, от того и знаю многое, но поверхностно,
+          зато могу собрать разные части в единую систему — даже если в отдельных областях мне ещё есть куда расти.
+          Тем не менее, основным направлением для себя выбрать Backend.
+        </p>
       </div>
     </section>
 
     <!-- SCENE 3 -->
     <section class="scene compact-title" id="scene-3">
+      <div class="scene-bg" data-bg="03"></div>
       <div class="scene-content">
         <div class="scene-number reveal from-left">03 / 07</div>
         <p class="eyebrow reveal from-left delay-1" data-i18n="s3.eyebrow">Experience</p>
@@ -878,6 +876,7 @@
 
     <!-- SCENE 4 -->
     <section class="scene compact-title" id="scene-4">
+      <div class="scene-bg" data-bg="04"></div>
       <div class="scene-content">
         <div class="scene-number reveal from-right">04 / 07</div>
         <p class="eyebrow reveal from-right delay-1" data-i18n="s4.eyebrow">Штуки, которые я делаю | Пет-проекты</p>
@@ -916,6 +915,7 @@
 
     <!-- SCENE 5 -->
     <section class="scene" id="scene-5">
+      <div class="scene-bg" data-bg="05"></div>
       <div class="scene-content">
         <div class="scene-number reveal from-left">05 / 07</div>
         <p class="eyebrow reveal from-left delay-1" data-i18n="s5.eyebrow">Quantum075</p>
@@ -937,6 +937,7 @@
 
     <!-- SCENE 6 -->
     <section class="scene" id="scene-6">
+      <div class="scene-bg" data-bg="06"></div>
       <div class="scene-content">
         <div class="scene-number reveal from-right">06 / 07</div>
         <p class="eyebrow reveal from-right delay-1" data-i18n="s6.eyebrow">Просто Я</p>
@@ -955,6 +956,7 @@
 
     <!-- SCENE 7 -->
     <section class="scene" id="scene-7">
+      <div class="scene-bg" data-bg="07"></div>
       <div class="scene-content">
         <div class="scene-number reveal from-right">07 / 07</div>
         <p class="eyebrow reveal from-right delay-1" data-i18n="s7.eyebrow">Контакты</p>
@@ -1109,6 +1111,17 @@
     const scrollHint = document.querySelector(".scroll-hint");
 
     let currentLang = "ru";
+
+    // Scene backgrounds: images/<NN>_bg.png is applied automatically once the file exists.
+    document.querySelectorAll(".scene-bg").forEach(bg => {
+      const src = `images/${bg.dataset.bg}_bg.png`;
+      const img = new Image();
+      img.onload = () => {
+        bg.style.backgroundImage = `url("${src}")`;
+        bg.classList.add("is-loaded");
+      };
+      img.src = src;
+    });
 
     function setLanguage(lang) {
       currentLang = lang;
