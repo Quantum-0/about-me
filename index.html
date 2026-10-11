@@ -219,6 +219,14 @@
         radial-gradient(circle at 90% 20%, rgba(209,53,33,.06), transparent 28%);
     }
 
+    .scene-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      background-size: cover;
+      background-position: center;
+    }
+
     .scene-content {
       width: min(100%, clamp(760px, 70vw, 1200px));
     }
@@ -286,6 +294,36 @@
       color: var(--muted);
       line-height: 1.7;
       font-size: 15px;
+    }
+
+    .scene-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) clamp(240px, 26vw, 340px);
+      gap: clamp(32px, 4vw, 64px);
+      align-items: center;
+    }
+
+    .split-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) clamp(240px, 30vw, 380px);
+      gap: clamp(28px, 4vw, 56px);
+      align-items: end;
+    }
+
+    .scene-photo {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      background: #151515;
+      box-shadow: 0 24px 70px rgba(0,0,0,.5);
+    }
+
+    .scene-photo img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
     }
 
     .tags {
@@ -566,6 +604,10 @@
 
     /* ---------- Scene tweaks ---------- */
 
+    #scene-1 h1 {
+      font-size: clamp(52px, 8vw, 112px);
+    }
+
     #scene-2 .lead {
       max-width: 780px;
     }
@@ -597,8 +639,13 @@
     }
 
     @media (min-width: 1100px) {
-      #scene-4 .cards {
+      #scene-4 .cards,
+      #scene-6 .cards {
         grid-template-columns: repeat(4, 1fr);
+      }
+
+      #scene-6 .cards {
+        max-width: 1160px;
       }
     }
 
@@ -622,6 +669,15 @@
 
       .cards {
         grid-template-columns: 1fr;
+      }
+
+      .scene-split,
+      .split-row {
+        grid-template-columns: 1fr;
+      }
+
+      .scene-photo img {
+        aspect-ratio: 16 / 10;
       }
 
       .timeline-item {
@@ -711,97 +767,43 @@
   </div>
 
   <main>
-    <!--
-      BACKGROUND IMAGE PROMPTS
-
-      Scene 1:
-      "A dark cozy miniature diorama representing a modern developer's personal workspace,
-      slightly stylized 3D, matte materials, cinematic soft lighting. A slim male anthropomorphic
-      fox with dark brown-black fur, light gray-white markings, white paws and tail tip, subtle
-      deep red markings, sitting at a desk with a laptop and two monitors. Tiny hints of code,
-      Twitch interface and creative tools around the room. Warm practical lights, subtle red and
-      mint-green accents, dark charcoal environment, premium modern portfolio aesthetic, cinematic
-      depth of field, no text, no logos, no watermark."
-
-      Scene 2:
-      "A dark futuristic miniature city representing backend engineering. A slim male anthropomorphic
-      fox developer walks through a tiny city made of server buildings and glowing data routes.
-      Docker containers represented as modular buildings, Kafka as flowing streams of light,
-      APIs as interconnected roads, Python and FastAPI suggested through abstract visual motifs.
-      Dark charcoal palette, restrained red and mint accents, cinematic soft volumetric lighting,
-      sophisticated 3D diorama, matte materials, no text, no logos, no watermark."
-
-      Scene 3:
-      "A cinematic miniature railway / road through a dark modern world representing a software
-      developer career. A slim male anthropomorphic fox walks beside a sequence of distinct
-      stations representing freelance work, smart home engineering, software development,
-      analytics, culture and tickets. Each station has its own subtle visual identity while
-      remaining in the same dark cozy world. Red and mint accent lights, warm atmospheric
-      lighting, stylized 3D diorama, cinematic depth of field, no text, no logos, no watermark."
-
-      Scene 4:
-      "A cozy dark miniature creative technology workshop filled with personal software projects.
-      A slim male anthropomorphic fox works on several projects at once: a glowing Twitch bot
-      service hub, a small Unity game on a monitor, an image-resizing machine, open-source code
-      displayed on screens, IoT boards, cables and tiny server racks. Leave several clean surfaces
-      where project screenshots could visually fit. The scene feels like a creative inventor's
-      workshop rather than a corporate office. Dark charcoal palette, red and subtle mint accents,
-      cinematic 3D diorama, soft warm lighting, no text, no logos, no watermark."
-
-      Scene 5:
-      "A cozy dark streamer room at night. A slim male anthropomorphic fox with dark brown-black
-      fur and light markings sits in front of a gaming PC and multiple monitors, wearing a headset
-      and streaming. One screen suggests a horror game, another shows a live streaming interface,
-      microphone and small desk lights nearby. The mood is relaxed and playful, representing
-      streaming as a hobby, recreation and communication practice. Warm dark room, subtle red and
-      mint accents, atmospheric cinematic lighting, slightly stylized 3D miniature diorama,
-      premium modern aesthetic, no text, no logos, no watermark."
-
-      Scene 6:
-      "A stylish cozy personal hobby room presented as a miniature gallery. A slim male
-      anthropomorphic fox moves between small visual scenes representing his hobbies: streaming,
-      digital drawing, 3D modeling, video editing, gaming, cycling, swimming, nature and enjoying
-      good food. Include small framed artworks, a 3D model on a desk, a bicycle helmet, game
-      controller, sketchbook, headphones and a window looking onto greenery. Dark charcoal palette,
-      warm lighting, subtle red and mint accents, cinematic depth of field, high-quality stylized
-      3D diorama, personal and inviting, no text, no logos, no watermark."
-
-      Scene 7:
-      "A quiet cinematic final scene in the same dark cozy miniature world. A slim male
-      anthropomorphic fox stands near a warm desk light and a simple communication terminal,
-      looking toward an open path leading outside. The atmosphere is calm, creative and welcoming,
-      suggesting an invitation to get in touch. Dark charcoal colors, warm lamp light, subtle red
-      and mint accents, cinematic depth of field, high-quality stylized 3D diorama, peaceful
-      portfolio ending, no text, no logos, no watermark."
-    -->
+    <!-- Image generation prompts live in IMAGES_PROMPTS.md -->
 
     <!-- SCENE 1 -->
     <section class="scene" id="scene-1">
-      <div class="scene-content">
-        <div class="scene-number reveal from-left">01 / 07</div>
-        <p class="eyebrow reveal from-left delay-1" data-i18n="s1.eyebrow">Привет, давай знакомиться!</p>
-        <h1 class="reveal from-left delay-2">
-          <span data-i18n="s1.title">QUANTUM0</span>
-        </h1>
-        <p class="small-copy reveal from-left delay-3" data-i18n="s1.copy">Также, Антон, или, для друзей, просто Тоша.</p>
-        <p class="lead reveal from-right delay-4" data-i18n="s1.lead">
-          Backend-разработчик, стример и человек, которому нравится придумывать, творить и воплощать идеи в жизнь.
-        </p>
+      <div class="scene-bg" style="background-image: url('images/fox-studio.jpg');"></div>
+      <div class="scene-content scene-split">
+        <div>
+          <div class="scene-number reveal from-left">01 / 07</div>
+          <p class="eyebrow reveal from-left delay-1" data-i18n="s1.eyebrow">Привет, давай знакомиться!</p>
+          <h1 class="reveal from-left delay-2">
+            <span data-i18n="s1.title">QUANTUM0</span>
+          </h1>
+          <p class="small-copy reveal from-left delay-3" data-i18n="s1.copy">Также, Антон, или, для друзей, просто Тоша.</p>
+          <p class="lead reveal from-right delay-4" data-i18n="s1.lead">
+            Backend-разработчик, стример и человек, которому нравится придумывать, творить и воплощать идеи в жизнь.
+          </p>
 
-        <div class="tags reveal from-bottom delay-4">
-          <span class="tag">Python</span>
-          <span class="tag">Backend</span>
-          <span class="tag">Twitch</span>
-          <span class="tag">Streaming</span>
-          <span class="tag">Open Source</span>
-          <span class="tag">IoT</span>
-          <span class="tag">GameDev</span>
+          <div class="tags reveal from-bottom delay-4">
+            <span class="tag">Python</span>
+            <span class="tag">Backend</span>
+            <span class="tag">Twitch</span>
+            <span class="tag">Streaming</span>
+            <span class="tag">Open Source</span>
+            <span class="tag">IoT</span>
+            <span class="tag">GameDev</span>
+          </div>
         </div>
+
+        <figure class="scene-photo reveal from-right delay-5">
+          <img src="images/fox-studio.jpg" alt="Лис-программист в уютной студии за компьютером" loading="lazy" />
+        </figure>
       </div>
     </section>
 
     <!-- SCENE 2 -->
     <section class="scene compact-title" id="scene-2">
+      <div class="scene-bg" style="background-image: url('images/work-office.jpg');"></div>
       <div class="scene-content">
         <div class="scene-number reveal from-right">02 / 07</div>
         <p class="eyebrow reveal from-right delay-1" data-i18n="s2.eyebrow">Engineering</p>
@@ -810,14 +812,20 @@
           Сейчас я занимаюсь backend-разработкой: API, микросервисы, базы данных,
           очереди, интеграции и всё то, что обычно скрыто за красивым интерфейсом.
         </p>
-        <p class="small-copy reveal from-left delay-4" data-i18n="s2.copy">
-          Основной стек — Python, FastAPI, SQLAlchemy, PostgreSQL, Kafka, Docker и Linux, но бэкендом я не ограничиваюсь.
-          Могу спроектировать систему целиком: разработать API и написать backend, собрать (какой-никакой) frontend,
-          настроить интеграции с внешними сервисами, собрать устройство, которое общается с сервером,
-          поднять и развернуть сам сервер и настроить CI/CD. Во многом интересно разбираться, от того и знаю многое, но поверхностно,
-          зато могу собрать разные части в единую систему — даже если в отдельных областях мне ещё есть куда расти.
-          Тем не менее, основным направлением для себя выбрать Backend.
-        </p>
+        <div class="split-row">
+          <p class="small-copy reveal from-left delay-4" data-i18n="s2.copy">
+            Основной стек — Python, FastAPI, SQLAlchemy, PostgreSQL, Kafka, Docker и Linux, но бэкендом я не ограничиваюсь.
+            Могу спроектировать систему целиком: разработать API и написать backend, собрать (какой-никакой) frontend,
+            настроить интеграции с внешними сервисами, собрать устройство, которое общается с сервером,
+            поднять и развернуть сам сервер и настроить CI/CD. Во многом интересно разбираться, от того и знаю многое, но поверхностно,
+            зато могу собрать разные части в единую систему — даже если в отдельных областях мне ещё есть куда расти.
+            Тем не менее, основным направлением для себя выбрать Backend.
+          </p>
+
+          <figure class="scene-photo reveal from-right delay-5">
+            <img src="images/work-office.jpg" alt="Разработчик у окна в современном офисе" loading="lazy" />
+          </figure>
+        </div>
       </div>
     </section>
 
@@ -938,6 +946,7 @@
           <div class="card"><div class="card-icon">✦</div><h3 data-i18n="hobby.art">Рисование и анимация</h3><p data-i18n="hobby.art.desc">Пробовал себя в рисунке, анимации и создании визуальных вещей.</p></div>
           <div class="card"><div class="card-icon">◇</div><h3 data-i18n="hobby.3d">3D-моделирование</h3><p data-i18n="hobby.3d.desc">Интересно создавать вещи не только кодом.</p></div>
           <div class="card"><div class="card-icon">⌁</div><h3 data-i18n="hobby.food">Вкусно поесть</h3><p data-i18n="hobby.food.desc">Хорошая еда — тоже важная часть отдыха.</p></div>
+          <div class="card"><div class="card-icon">✽</div><h3 data-i18n="hobby.tea">Чай</h3><p data-i18n="hobby.tea.desc">Разные сорта и ритуалы заваривания — могу говорить о чае бесконечно.</p></div>
           <div class="card"><div class="card-icon">↗</div><h3 data-i18n="hobby.outdoors">Природа и движение</h3><p data-i18n="hobby.outdoors.desc">Велосипед, прогулки, природа и просто выбраться из дома.</p></div>
           <div class="card"><div class="card-icon">▣</div><h3 data-i18n="hobby.games">Игры</h3><p data-i18n="hobby.games.desc">Dead by Daylight, League of Legends и всё, во что хочется поиграть.</p></div>
         </div>
@@ -1016,6 +1025,8 @@
         "hobby.3d.desc": "Интересно создавать вещи не только кодом.",
         "hobby.food": "Вкусно поесть",
         "hobby.food.desc": "Хорошая еда — тоже важная часть отдыха.",
+        "hobby.tea": "Чай",
+        "hobby.tea.desc": "Разные сорта и ритуалы заваривания — могу говорить о чае бесконечно.",
         "hobby.outdoors": "Природа и движение",
         "hobby.outdoors.desc": "Велосипед, прогулки, природа и просто выбраться из дома.",
         "hobby.games": "Игры",
@@ -1070,6 +1081,8 @@
         "hobby.3d.desc": "It's interesting to create things not only with code.",
         "hobby.food": "Eating well",
         "hobby.food.desc": "Good food is also an important part of rest.",
+        "hobby.tea": "Tea",
+        "hobby.tea.desc": "Different varieties and brewing rituals — I can talk about tea forever.",
         "hobby.outdoors": "Nature and movement",
         "hobby.outdoors.desc": "Bike rides, walks, nature and simply getting out of the house.",
         "hobby.games": "Games",
