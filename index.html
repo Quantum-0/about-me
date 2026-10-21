@@ -211,6 +211,34 @@
       opacity: 1;
     }
 
+    /* Scene 6 extra backgrounds: images/06_0N_bg.png (N = card number)
+       cross-fade in random order; hovering a card shows its own background. */
+    .scene-bg-stack {
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 3s ease;
+    }
+
+    .scene-bg-stack.is-visible {
+      opacity: 1;
+    }
+
+    .scene-bg-layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+
+    .scene-bg-layer.is-active {
+      opacity: 1;
+    }
+
     .scene::before {
       content: "";
       position: absolute;
@@ -940,6 +968,7 @@
     <!-- SCENE 6 -->
     <section class="scene" id="scene-6">
       <div class="scene-bg" data-bg="06"></div>
+      <div class="scene-bg-stack"></div>
       <div class="scene-content">
         <div class="scene-number reveal from-right">06 / 07</div>
         <p class="eyebrow reveal from-right delay-1" data-i18n="s6.eyebrow">Просто Я</p>
@@ -1136,6 +1165,103 @@
       img.src = src;
     });
 
+    // Scene 6: extra backgrounds images/06_0N_bg.png (N = card number in DOM
+    // order) cross-fade in random order while the scene is active. Hovering a
+    // card pins its own background; layers are added only for files that
+    // actually exist, so the scene keeps working before all files are in place.
+    const scene6Stack = document.querySelector("#scene-6 .scene-bg-stack");
+    const scene6Layers = new Map();
+    const SCENE6_COUNT = 8;
+    const SCENE6_INTERVAL = 6000;
+    const SCENE6_FADE = 2000;
+    let scene6Order = [];
+    let scene6Pos = 0;
+    let scene6Current = null;
+    let scene6Hovered = false;
+    let scene6Timer = null;
+    let scene6HideTimer = null;
+    let scene6TopZ = 0;
+
+    function scene6Shuffle() {
+      scene6Order = [...scene6Layers.keys()];
+      for (let i = scene6Order.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [scene6Order[i], scene6Order[j]] = [scene6Order[j], scene6Order[i]];
+      }
+      if (scene6Order.length > 1 && scene6Order[0] === scene6Current) {
+        [scene6Order[0], scene6Order[scene6Order.length - 1]] =
+          [scene6Order[scene6Order.length - 1], scene6Order[0]];
+      }
+      scene6Pos = 0;
+    }
+
+    function scene6Show(index) {
+      if (!scene6Layers.has(index) || index === scene6Current) return;
+      const next = scene6Layers.get(index);
+      const prev = scene6Current !== null ? scene6Layers.get(scene6Current) : null;
+      scene6TopZ += 1;
+      next.style.zIndex = scene6TopZ;
+      next.classList.add("is-active");
+      clearTimeout(scene6HideTimer);
+      if (prev) {
+        scene6HideTimer = setTimeout(() => prev.classList.remove("is-active"), SCENE6_FADE + 100);
+      }
+      scene6Current = index;
+    }
+
+    function scene6Next() {
+      if (scene6Pos >= scene6Order.length) scene6Shuffle();
+      if (scene6Pos < scene6Order.length) {
+        scene6Show(scene6Order[scene6Pos++]);
+      }
+    }
+
+    function scene6Start() {
+      scene6Stop();
+      scene6Hovered = false;
+      if (scene6Layers.size > 1) {
+        scene6Timer = setInterval(() => {
+          if (!scene6Hovered) scene6Next();
+        }, SCENE6_INTERVAL);
+      }
+    }
+
+    function scene6Stop() {
+      clearInterval(scene6Timer);
+      scene6Timer = null;
+    }
+
+    if (scene6Stack) {
+      for (let n = 1; n <= SCENE6_COUNT; n++) {
+        const src = `images/06_0${n}_bg.png`;
+        const img = new Image();
+        img.onload = () => {
+          const layer = document.createElement("div");
+          layer.className = "scene-bg-layer";
+          layer.style.backgroundImage = `url("${src}")`;
+          scene6Stack.appendChild(layer);
+          scene6Layers.set(n, layer);
+          scene6Shuffle();
+          if (scene6Stack.classList.contains("is-visible") && scene6Current === null) {
+            scene6Next();
+          }
+        };
+        img.src = src;
+      }
+
+      document.querySelectorAll("#scene-6 .cards .card").forEach((card, i) => {
+        const n = i + 1;
+        card.addEventListener("mouseenter", () => {
+          if (!scene6Layers.has(n)) return;
+          scene6Hovered = true;
+          scene6Show(n);
+        });
+        card.addEventListener("mouseleave", () => {
+          scene6Hovered = false;
+        });
+      });
+    }
+
     function setLanguage(lang) {
       currentLang = lang;
       document.documentElement.lang = lang;
@@ -1178,6 +1304,13 @@
             bg.classList.add("is-visible");
           }
 
+          const stack = entry.target.querySelector(".scene-bg-stack");
+          if (stack) {
+            stack.classList.add("is-visible");
+            scene6Next();
+            scene6Start();
+          }
+
           const index = scenes.indexOf(entry.target);
           dots.forEach((dot, i) => dot.classList.toggle("active", i === index));
 
@@ -1206,6 +1339,15 @@
             bg.classList.remove("is-visible");
             void bg.offsetWidth;
             bg.style.transition = "";
+          }
+        });
+        document.querySelectorAll(".scene-bg-stack.is-visible").forEach(stack => {
+          if (stack.closest(".scene") !== activeScene) {
+            stack.style.transition = "none";
+            stack.classList.remove("is-visible");
+            void stack.offsetWidth;
+            stack.style.transition = "";
+            scene6Stop();
           }
         });
       }, 450);
