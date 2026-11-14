@@ -461,6 +461,59 @@
       border-color: rgba(255,255,255,.25);
     }
 
+    /* Scene 6 only: a hovered card stays in place and glows, while the other
+       cards, the title and the darkening overlay fade out over .7s and come
+       back over .4s, so the scene background shows through. */
+    #scene-6 .card {
+      transition:
+        transform .4s var(--ease),
+        border-color .4s ease,
+        background-color .4s ease,
+        box-shadow .4s ease,
+        opacity .4s ease;
+    }
+
+    #scene-6:has(.card:hover) .card:not(:hover) {
+      opacity: .4;
+      transition:
+        opacity .7s ease,
+        border-color .7s ease,
+        background-color .7s ease,
+        box-shadow .7s ease;
+    }
+
+    #scene-6 .card:hover {
+      transform: none;
+      border-color: rgba(255,255,255,.55);
+      background-color: rgba(17,17,17,.55);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.35),
+        0 0 28px rgba(255,255,255,.22),
+        0 0 70px rgba(209,53,33,.4);
+      transition:
+        border-color .7s ease,
+        background-color .7s ease,
+        box-shadow .7s ease,
+        opacity .7s ease;
+    }
+
+    #scene-6 h2 {
+      transition: opacity 1.5s ease, transform 1s var(--ease);
+    }
+
+    #scene-6:has(.card:hover) h2 {
+      opacity: .5;
+    }
+
+    #scene-6::before {
+      transition: opacity .4s ease;
+    }
+
+    #scene-6:has(.card:hover)::before {
+      opacity: 0;
+      transition: opacity .7s ease;
+    }
+
     .card-icon {
       color: var(--accent);
       font-size: 20px;
