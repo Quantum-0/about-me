@@ -212,8 +212,9 @@
       opacity: 1;
     }
 
-    /* Scene 6 extra backgrounds: images/06_0N_bg.png (N = card number)
-       cross-fade in random order; hovering a card shows its own background. */
+    /* Scene 6 extra backgrounds: images/06_<name>_bg.png (<name> = the card's
+       data-bg) cross-fade in random order; hovering a card shows its own
+       background. Cards can be reordered — the background follows the name. */
     .scene-bg-stack {
       position: absolute;
       inset: 0;
@@ -551,6 +552,73 @@
       line-height: 1.6;
     }
 
+    /* ---------- Projects carousel (scene 4) ---------- */
+
+    #scene-4 .carousel {
+      position: relative;
+      margin-top: 34px;
+      max-width: 1160px;
+      width: 100%;
+    }
+
+    #scene-4 .carousel-track {
+      display: flex;
+      margin-top: 0;
+      max-width: none;
+      gap: 12px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      padding: 6px 0 8px;
+      scrollbar-width: none;
+    }
+
+    #scene-4 .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* width, not flex-basis: percentage flex-basis resolves against a wrong
+       reference size on overflow scrollers in some WebKit builds */
+    #scene-4 .carousel-track .card {
+      flex: 0 0 auto;
+      width: calc((100% - 36px) / 4);
+    }
+
+    .carousel-btn {
+      position: absolute;
+      z-index: 5;
+      top: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: rgba(23,23,23,.72);
+      backdrop-filter: blur(8px);
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      transform: translateY(-50%);
+      transition: opacity .3s ease, visibility .3s ease, border-color .3s ease, background-color .3s ease;
+    }
+
+    .carousel-btn:hover {
+      border-color: rgba(255,255,255,.35);
+      background-color: rgba(23,23,23,.92);
+    }
+
+    .carousel-btn:disabled {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .carousel-btn--prev { left: -12px; }
+    .carousel-btn--next { right: -12px; }
+
     /* ---------- Contact ---------- */
 
     .contacts {
@@ -713,10 +781,6 @@
       line-height: 1.65;
     }
 
-    #scene-4 .cards {
-      max-width: 1160px;
-    }
-
     #scene-6 h2 {
       font-size: clamp(30px, 3.6vw, 46px);
     }
@@ -735,12 +799,8 @@
     }
 
     @media (min-width: 1100px) {
-      #scene-4 .cards,
       #scene-6 .cards {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-      #scene-6 .cards {
+        grid-template-columns: repeat(3, 1fr);
         max-width: 1160px;
       }
     }
@@ -765,6 +825,20 @@
 
       .cards {
         grid-template-columns: 1fr;
+      }
+
+      /* Scene 4 stays a horizontal carousel; scene 6 switches to two
+         columns so nine cards don't stretch the scene too tall. */
+      #scene-4 .cards {
+        display: flex;
+      }
+
+      #scene-4 .carousel-track .card {
+        width: 78vw;
+      }
+
+      #scene-6 .cards {
+        grid-template-columns: repeat(2, 1fr);
       }
 
       .scene-split {
@@ -969,30 +1043,46 @@
           Пет-проекты помогают мне воплощать собственные идеи, пробовать новые технологии
           и продолжать развиваться вне рабочих задач.
         </p>
-        <div class="cards reveal from-bottom delay-4">
-          <a class="card" href="https://bot.quantum0.ru" target="_blank" rel="noopener">
-            <div class="card-image"><img src="https://bot.quantum0.ru/static/images/og-image.jpg" alt="Quantum0's Twitch Bot" loading="lazy" /></div>
-            <h3>Quantum0's Twitch Bot</h3>
-            <p data-i18n="s4.bot">Twitch-бот с чат-командами, интеграцией с MemeAlerts и интерактивными оверлеями.</p>
-          </a>
+        <div class="carousel reveal from-bottom delay-4">
+          <button class="carousel-btn carousel-btn--prev" type="button" aria-label="Предыдущие проекты">‹</button>
+          <div class="cards carousel-track">
+            <a class="card" href="https://bot.quantum0.ru" target="_blank" rel="noopener">
+              <div class="card-image"><img src="images/04_twitch-bot.jpg" alt="Quantum0's Twitch Bot" loading="lazy" /></div>
+              <h3>Quantum0's Twitch Bot</h3>
+              <p data-i18n="s4.bot">Twitch-бот с чат-командами, интеграцией с MemeAlerts и интерактивными оверлеями.</p>
+            </a>
 
-          <a class="card" href="https://rmb.quantum0.ru" target="_blank" rel="noopener">
-            <div class="card-icon">↗</div>
-            <h3>Unity Game</h3>
-            <p data-i18n="s4.rmb">Игра про катание шарика, сделанная в Unity.</p>
-          </a>
+            <a class="card" href="https://rmb.quantum0.ru" target="_blank" rel="noopener">
+              <div class="card-icon">↗</div>
+              <h3>Unity Game</h3>
+              <p data-i18n="s4.rmb">Игра про катание шарика, сделанная в Unity.</p>
+            </a>
 
-          <a class="card" href="https://resizer.quantum0.ru" target="_blank" rel="noopener">
-            <div class="card-image"><img src="https://resizer.quantum0.ru/og-image.jpg" alt="Image Resizer" loading="lazy" /></div>
-            <h3>Image Resizer</h3>
-            <p data-i18n="s4.resizer">Небольшой сервис для ресайза изображений.</p>
-          </a>
+            <a class="card" href="https://resizer.quantum0.ru" target="_blank" rel="noopener">
+              <div class="card-image"><img src="images/04_resizer.jpg" alt="Image Resizer" loading="lazy" /></div>
+              <h3>Image Resizer</h3>
+              <p data-i18n="s4.resizer">Небольшой сервис для ресайза изображений.</p>
+            </a>
 
-          <a class="card" href="https://github.com/Quantum-0?tab=repositories" target="_blank" rel="noopener">
-            <div class="card-icon">⌁</div>
-            <h3>Open Source</h3>
-            <p data-i18n="s4.oss">Контрибуции в pyTelegramBotAPI, aiopg, falso, pycades и другие проекты.</p>
-          </a>
+            <a class="card" href="https://github.com/Quantum-0?tab=repositories" target="_blank" rel="noopener">
+              <div class="card-icon">⌁</div>
+              <h3>Open Source</h3>
+              <p data-i18n="s4.oss">Контрибуции в pyTelegramBotAPI, aiopg, falso, pycades и другие проекты.</p>
+            </a>
+
+            <div class="card">
+              <div class="card-icon">◈</div>
+              <h3 data-i18n="s4.stairs.title">Подсветка для лестницы дома</h3>
+              <p data-i18n="s4.stairs">Автоматическая подсветка ступеней — заготовка, скоро расскажу подробнее.</p>
+            </div>
+
+            <a class="card" href="https://cut.quantum0.ru" target="_blank" rel="noopener">
+              <div class="card-icon">▶</div>
+              <h3 data-i18n="s4.cut.title">Редактор видео</h3>
+              <p data-i18n="s4.cut">Онлайн-редактор видео — заготовка, проект в разработке.</p>
+            </a>
+          </div>
+          <button class="carousel-btn carousel-btn--next" type="button" aria-label="Следующие проекты">›</button>
         </div>
       </div>
     </section>
@@ -1028,14 +1118,15 @@
         <p class="eyebrow reveal from-right delay-1" data-i18n="s6.eyebrow">Просто Я</p>
         <h2 class="reveal from-right delay-2" data-i18n="s6.title">Мне нравится заниматься творчеством<br>и пробовать разное.</h2>
         <div class="cards reveal from-bottom delay-3">
-          <div class="card"><div class="card-icon">◉</div><h3 data-i18n="hobby.streaming">Стриминг</h3><p data-i18n="hobby.streaming.desc">Игры, общение и эксперименты с контентом.</p></div>
-          <div class="card"><div class="card-icon">✦</div><h3 data-i18n="hobby.art">Рисование и анимация</h3><p data-i18n="hobby.art.desc">Пробовал себя в рисунке, анимации и создании визуальных вещей.</p></div>
-          <div class="card"><div class="card-icon">◇</div><h3 data-i18n="hobby.3d">3D-моделирование</h3><p data-i18n="hobby.3d.desc">Интересно создавать вещи не только кодом.</p></div>
-          <div class="card"><div class="card-icon">⌁</div><h3 data-i18n="hobby.food">Вкусно поесть</h3><p data-i18n="hobby.food.desc">Хорошая еда — тоже важная часть отдыха.</p></div>
-          <div class="card"><div class="card-icon">✽</div><h3 data-i18n="hobby.tea">Чай</h3><p data-i18n="hobby.tea.desc">Разные сорта и ритуалы заваривания — могу говорить о чае бесконечно.</p></div>
-          <div class="card"><div class="card-icon">↗</div><h3 data-i18n="hobby.outdoors">Природа и движение</h3><p data-i18n="hobby.outdoors.desc">Велосипед, прогулки, природа и просто выбраться из дома.</p></div>
-          <div class="card"><div class="card-icon">▣</div><h3 data-i18n="hobby.games">Игры</h3><p data-i18n="hobby.games.desc">Dead by Daylight, League of Legends и всё, во что хочется поиграть.</p></div>
-          <div class="card"><div class="card-icon">☺</div><h3 data-i18n="hobby.friends">Друзья</h3><p data-i18n="hobby.friends.desc">IRL встречи с друзьями, совместное времяпрепровождение.</p></div>
+          <div class="card" data-bg="streaming"><div class="card-icon">◉</div><h3 data-i18n="hobby.streaming">Стриминг</h3><p data-i18n="hobby.streaming.desc">Игры, общение и эксперименты с контентом.</p></div>
+          <div class="card" data-bg="art"><div class="card-icon">✦</div><h3 data-i18n="hobby.art">Рисование и анимация</h3><p data-i18n="hobby.art.desc">Пробовал себя в рисунке, анимации и создании визуальных вещей.</p></div>
+          <div class="card" data-bg="3d"><div class="card-icon">◇</div><h3 data-i18n="hobby.3d">3D-моделирование</h3><p data-i18n="hobby.3d.desc">Интересно создавать вещи не только кодом.</p></div>
+          <div class="card" data-bg="food"><div class="card-icon">⌁</div><h3 data-i18n="hobby.food">Вкусно поесть</h3><p data-i18n="hobby.food.desc">Хорошая еда — тоже важная часть отдыха.</p></div>
+          <div class="card" data-bg="tea"><div class="card-icon">✽</div><h3 data-i18n="hobby.tea">Чай</h3><p data-i18n="hobby.tea.desc">Разные сорта и ритуалы заваривания — могу говорить о чае бесконечно.</p></div>
+          <div class="card" data-bg="outdoors"><div class="card-icon">↗</div><h3 data-i18n="hobby.outdoors">Природа и движение</h3><p data-i18n="hobby.outdoors.desc">Велосипед, прогулки, природа и просто выбраться из дома.</p></div>
+          <div class="card" data-bg="games"><div class="card-icon">▣</div><h3 data-i18n="hobby.games">Игры</h3><p data-i18n="hobby.games.desc">Dead by Daylight, League of Legends и всё, во что хочется поиграть.</p></div>
+          <div class="card" data-bg="billiard"><div class="card-icon">◍</div><h3 data-i18n="hobby.billiard">Бильярд</h3><p data-i18n="hobby.billiard.desc">Пул и русская — люблю собирать серии и точные удары.</p></div>
+          <div class="card" data-bg="friends"><div class="card-icon">☺</div><h3 data-i18n="hobby.friends">Друзья</h3><p data-i18n="hobby.friends.desc">IRL встречи с друзьями, совместное времяпрепровождение.</p></div>
         </div>
       </div>
     </section>
@@ -1101,6 +1192,10 @@
         "s4.rmb": "Игра про катание шарика, сделанная в Unity.",
         "s4.resizer": "Небольшой сервис для ресайза изображений.",
         "s4.oss": "Контрибуции в pyTelegramBotAPI, aiopg, falso, pycades и другие проекты.",
+        "s4.stairs.title": "Подсветка для лестницы дома",
+        "s4.stairs": "Автоматическая подсветка ступеней — заготовка, скоро расскажу подробнее.",
+        "s4.cut.title": "Редактор видео",
+        "s4.cut": "Онлайн-редактор видео — заготовка, проект в разработке.",
         "s5.eyebrow": "Quantum075",
         "s5.title": "Вне работы я занимаюсь стримингом.",
         "s5.lead": "Стриминг — это мой способ отдыхать, получать удовольствие от игр и одновременно развивать навыки коммуникации. Здесь я общаюсь, экспериментирую с OBS и своими сервисами. Играю чаще всего в хорроры, Dead by Daylight, инди-игры и кооп-игры с друзьями.",
@@ -1120,6 +1215,8 @@
         "hobby.outdoors.desc": "Велосипед, прогулки, природа и просто выбраться из дома.",
         "hobby.games": "Игры",
         "hobby.games.desc": "Dead by Daylight, League of Legends и всё, во что хочется поиграть.",
+        "hobby.billiard": "Бильярд",
+        "hobby.billiard.desc": "Пул и русская — люблю собирать серии и точные удары.",
         "hobby.friends": "Друзья",
         "hobby.friends.desc": "IRL встречи с друзьями, совместное времяпрепровождение.",
         "s7.eyebrow": "Контакты",
@@ -1160,6 +1257,10 @@
         "s4.rmb": "A game about rolling a ball, made in Unity.",
         "s4.resizer": "A small service for resizing images.",
         "s4.oss": "Contributions to pyTelegramBotAPI, aiopg, falso, pycades and other projects.",
+        "s4.stairs.title": "Staircase Lighting",
+        "s4.stairs": "Automatic stair lighting — a work in progress, details soon.",
+        "s4.cut.title": "Video Editor",
+        "s4.cut": "An online video editor — a work in progress.",
         "s5.eyebrow": "Quantum075",
         "s5.title": "Outside of work,<br>I stream.",
         "s5.lead": "I stream games, hang out, experiment with OBS and build my own tools. I especially enjoy horror games, Dead by Daylight, indie games and co-op runs with friends.",
@@ -1179,6 +1280,8 @@
         "hobby.outdoors.desc": "Bike rides, walks, nature and simply getting out of the house.",
         "hobby.games": "Games",
         "hobby.games.desc": "Dead by Daylight, League of Legends and anything I feel like playing.",
+        "hobby.billiard": "Billiards",
+        "hobby.billiard.desc": "Pool and russian pyramid — love building series and precise shots.",
         "hobby.friends": "Friends",
         "hobby.friends.desc": "IRL meetups with friends and spending time together.",
         "s7.eyebrow": "Contact",
@@ -1219,13 +1322,14 @@
       img.src = src;
     });
 
-    // Scene 6: extra backgrounds images/06_0N_bg.png (N = card number in DOM
-    // order) cross-fade in random order while the scene is active. Hovering a
-    // card pins its own background; layers are added only for files that
-    // actually exist, so the scene keeps working before all files are in place.
+    // Scene 6: extra backgrounds images/06_<name>_bg.png (<name> = the card's
+    // data-bg attribute) cross-fade in random order while the scene is active.
+    // Hovering a card pins its own background; layers are added only for files
+    // that actually exist, so the scene keeps working before all files are in
+    // place and cards can be reordered freely — the background follows the name.
     const scene6Stack = document.querySelector("#scene-6 .scene-bg-stack");
+    const scene6Cards = document.querySelectorAll("#scene-6 .cards .card");
     const scene6Layers = new Map();
-    const SCENE6_COUNT = 8;
     const SCENE6_INTERVAL = 6000;
     const SCENE6_FADE = 2000;
     let scene6Order = [];
@@ -1249,9 +1353,9 @@
       scene6Pos = 0;
     }
 
-    function scene6Show(index) {
-      if (!scene6Layers.has(index) || index === scene6Current) return;
-      const next = scene6Layers.get(index);
+    function scene6Show(key) {
+      if (!scene6Layers.has(key) || key === scene6Current) return;
+      const next = scene6Layers.get(key);
       const prev = scene6Current !== null ? scene6Layers.get(scene6Current) : null;
       scene6TopZ += 1;
       next.style.zIndex = scene6TopZ;
@@ -1260,7 +1364,7 @@
       if (prev) {
         scene6HideTimer = setTimeout(() => prev.classList.remove("is-active"), SCENE6_FADE + 100);
       }
-      scene6Current = index;
+      scene6Current = key;
     }
 
     function scene6Next() {
@@ -1286,34 +1390,131 @@
     }
 
     if (scene6Stack) {
-      for (let n = 1; n <= SCENE6_COUNT; n++) {
-        const src = `images/06_0${n}_bg.png`;
+      scene6Cards.forEach(card => {
+        const name = card.dataset.bg;
+        if (!name) return;
+        const src = `images/06_${name}_bg.png`;
         const img = new Image();
         img.onload = () => {
           const layer = document.createElement("div");
           layer.className = "scene-bg-layer";
           layer.style.backgroundImage = `url("${src}")`;
           scene6Stack.appendChild(layer);
-          scene6Layers.set(n, layer);
+          scene6Layers.set(name, layer);
           scene6Shuffle();
           if (scene6Stack.classList.contains("is-visible") && scene6Current === null) {
             scene6Next();
           }
         };
         img.src = src;
-      }
+      });
 
-      document.querySelectorAll("#scene-6 .cards .card").forEach((card, i) => {
-        const n = i + 1;
+      scene6Cards.forEach(card => {
         card.addEventListener("mouseenter", () => {
-          if (!scene6Layers.has(n)) return;
+          const name = card.dataset.bg;
+          if (!scene6Layers.has(name)) return;
           scene6Hovered = true;
-          scene6Show(n);
+          scene6Show(name);
         });
         card.addEventListener("mouseleave", () => {
           scene6Hovered = false;
         });
       });
+    }
+
+    // Scene 4: projects carousel — arrow buttons scroll the horizontal track
+    // by one card. The scroll is animated through direct scrollLeft
+    // assignments driven by a timer chain: programmatic smooth scrolling,
+    // scroll-behavior and rAF are unreliable on overflow scrollers in some
+    // WebKit builds (embedded webviews). Left/Right arrow keys do the same
+    // while scene 4 is the active scene.
+    const carouselTrack = document.querySelector("#scene-4 .carousel-track");
+    let scrollProjects = null;
+
+    if (carouselTrack) {
+      const prevBtn = document.querySelector("#scene-4 .carousel-btn--prev");
+      const nextBtn = document.querySelector("#scene-4 .carousel-btn--next");
+      const firstCard = carouselTrack.querySelector(".card");
+      const CAROUSEL_DURATION = 450;
+
+      let carouselAnim = null;
+
+      const cardStep = () => (firstCard ? firstCard.offsetWidth + 12 : carouselTrack.clientWidth / 2);
+
+      const maxCarouselScroll = () => carouselTrack.scrollWidth - carouselTrack.clientWidth;
+
+      const updateCarouselArrows = () => {
+        prevBtn.disabled = carouselTrack.scrollLeft <= 1;
+        nextBtn.disabled = carouselTrack.scrollLeft >= maxCarouselScroll() - 1;
+      };
+
+      const stopCarouselAnim = () => {
+        if (carouselAnim) {
+          clearTimeout(carouselAnim);
+          carouselAnim = null;
+        }
+      };
+
+      const animateScrollTo = (target) => {
+        const from = carouselTrack.scrollLeft;
+        const distance = target - from;
+        stopCarouselAnim();
+
+        if (Math.abs(distance) < 1) {
+          carouselTrack.scrollLeft = target;
+          updateCarouselArrows();
+          return;
+        }
+
+        const start = performance.now();
+
+        const frame = () => {
+          const t = Math.min(1, (performance.now() - start) / CAROUSEL_DURATION);
+          const eased = 1 - Math.pow(1 - t, 3);
+          carouselTrack.scrollLeft = from + distance * eased;
+          updateCarouselArrows();
+          if (t < 1) {
+            carouselAnim = setTimeout(frame, 16);
+          } else {
+            carouselTrack.scrollLeft = target;
+            carouselAnim = null;
+            updateCarouselArrows();
+          }
+        };
+
+        carouselAnim = setTimeout(frame, 16);
+      };
+
+      const scrollToCard = (direction) => {
+        const step = cardStep();
+        const raw = carouselTrack.scrollLeft + direction * step;
+        const target = Math.max(0, Math.min(maxCarouselScroll(), Math.round(raw / step) * step));
+        animateScrollTo(target);
+      };
+
+      prevBtn.addEventListener("click", () => scrollToCard(-1));
+      nextBtn.addEventListener("click", () => scrollToCard(1));
+
+      // Native user scrolling cancels a running animation and refreshes the
+      // arrows; the timeout covers engines that swallow scroll events.
+      const refreshSoon = () => {
+        stopCarouselAnim();
+        setTimeout(updateCarouselArrows, 150);
+      };
+      ["wheel", "touchstart", "pointerdown"].forEach(evt => {
+        carouselTrack.addEventListener(evt, refreshSoon, { passive: true });
+      });
+
+      carouselTrack.addEventListener("scroll", updateCarouselArrows, { passive: true });
+      carouselTrack.addEventListener("scrollend", updateCarouselArrows);
+      window.addEventListener("resize", updateCarouselArrows);
+      updateCarouselArrows();
+
+      scrollProjects = (direction) => {
+        if (activeScene && activeScene.id === "scene-4") {
+          scrollToCard(direction);
+        }
+      };
     }
 
     function setLanguage(lang) {
@@ -1504,6 +1705,12 @@
       }
 
       if (warningOverlay.classList.contains("is-open")) return;
+
+      if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && scrollProjects) {
+        event.preventDefault();
+        scrollProjects(event.key === "ArrowLeft" ? -1 : 1);
+        return;
+      }
 
       if (["ArrowDown", "PageDown", "ArrowUp", "PageUp", " "].includes(event.key)) {
         event.preventDefault();
