@@ -453,8 +453,10 @@
       padding: 22px;
       border: 1px solid var(--line);
       border-radius: 18px;
-      background: rgba(255,255,255,.035);
-      backdrop-filter: blur(8px);
+      /* solid tint instead of backdrop-filter: blurring the backdrop forces
+         every card to re-render each frame while the scene background
+         cross-fades, which made scene 6 lag */
+      background: rgba(255,255,255,.06);
       transition: transform .35s var(--ease), border-color .35s ease;
     }
 
@@ -679,6 +681,9 @@
     .scene.is-visible .reveal {
       opacity: 1;
       transform: translate(0);
+      /* release the compositor layers once the entrance animation has
+         started — permanent will-change keeps ~40 layers alive site-wide */
+      will-change: auto;
     }
 
     .scene.is-visible .delay-1 { transition-delay: .08s; }
@@ -1539,12 +1544,26 @@
       btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
     });
 
+    // Smooth-scroll to a scene. CSS scroll-snap is paused for the duration:
+    // when the smooth animation lands a fraction off the snap point, the
+    // mandatory snapping otherwise corrects it with a visible jerk.
+    let snapPauseTimer;
+
+    function scrollToScene(scene) {
+      const root = document.documentElement;
+      const target = Math.round(scene.getBoundingClientRect().top + window.scrollY);
+      root.style.scrollSnapType = "none";
+      window.scrollTo({ top: target, behavior: "smooth" });
+      clearTimeout(snapPauseTimer);
+      snapPauseTimer = setTimeout(() => {
+        root.style.scrollSnapType = "";
+      }, 900);
+    }
+
     dots.forEach(dot => {
       dot.addEventListener("click", () => {
-        document.getElementById(dot.dataset.target)?.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
+        const scene = document.getElementById(dot.dataset.target);
+        if (scene) scrollToScene(scene);
       });
     });
 
@@ -1646,10 +1665,7 @@
         event.preventDefault();
         wheelLocked = true;
 
-        scenes[nextIndex].scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
+        scrollToScene(scenes[nextIndex]);
 
         clearTimeout(wheelTimer);
         wheelTimer = setTimeout(() => {
@@ -1726,10 +1742,7 @@
         const direction = event.key === "ArrowUp" || event.key === "PageUp" ? -1 : 1;
         const nextIndex = Math.max(0, Math.min(scenes.length - 1, currentIndex + direction));
 
-        scenes[nextIndex].scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
+        scrollToScene(scenes[nextIndex]);
       }
     });
   </script>

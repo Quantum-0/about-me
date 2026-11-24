@@ -16,15 +16,22 @@
 
 ## Статус
 
+Фоны сцен подключаются автоматически: положи файл `images/<NN>_bg.png` — и он подхватится.
+Заменённые старые версии хранятся рядом как `<NN>_bg_old.png` и нигде не используются.
+
 | Сцена | Изображение | Статус |
 |---|---|---|
-| 01 — Приветствие | `images/fox-studio.jpg` | ✅ готово |
-| 02 — Работа | `images/work-office.jpg` | ✅ готово |
-| 03 — Путь разработчика | — | нужно сгенерировать |
-| 04 — Пет-проекты | — | опционально (сцена и так плотно заполнена карточками) |
-| 05 — Стриминг | — | нужно сгенерировать |
-| 06 — Хобби | — | нужно сгенерировать (7 маленьких картинок для карточек) |
-| 07 — Контакты | — | нужно сгенерировать |
+| 01 — Приветствие | `images/01_bg.png` | ✅ готово (старое: `01_bg_old.png`) |
+| 02 — Работа | `images/02_bg.png` | нужно сгенерировать |
+| 03 — Путь разработчика | `images/03_bg.png` | ✅ готово (старое: `03_bg_old.png`) |
+| 04 — Пет-проекты | `images/04_bg.png` | ✅ готово |
+| 05 — Стриминг | `images/05_bg.png` | нужно сгенерировать |
+| 06 — Хобби | `images/06_<имя>_bg.png`: streaming, art, 3d, food, tea, outdoors, games, billiard, friends | готово 5 из 9; фон привязан к карточке по имени (`data-bg`), карточки можно переставлять местами; на сцене крутятся случайно, ховер карточки показывает свой фон |
+| 07 — Контакты | `images/07_bg.png` | нужно сгенерировать |
+
+Карточки проектов сцены 04: картинки лежат локально — `images/04_twitch-bot.jpg`, `images/04_resizer.jpg`.
+Для заготовок (подсветка лестницы, редактор видео) потом можно положить `04_<имя>.jpg` и добавить в
+карточку `<div class="card-image"><img ... /></div>` по образцу существующих.
 
 ---
 
@@ -89,21 +96,27 @@
 > creative inventor's workshop rather than a corporate office. Dark charcoal palette, red and
 > subtle mint accents, cinematic 3D diorama, soft warm lighting, no text, no logos, no watermark."
 
-### Scene 06 — Хобби-карточки (7 маленьких, формат 1:1)
+### Scene 06 — Хобби-карточки (9 маленьких, формат 1:1)
 
-Общий префикс для всех семи:
+Каждая карточка имеет атрибут `data-bg="<имя>"`, файл фона — `images/06_<имя>_bg.png`.
+Привязка по имени, а не по номеру, поэтому карточки можно переставлять в любом порядке.
+Отсутствующие файлы подхватятся автоматически, когда появятся в `images/`.
+
+Общий префикс для всех девяти:
 
 > "Small square cozy dark illustration for a hobby card, single centered subject,
 > dark charcoal palette, red and mint accent lights, slightly stylized cinematic 3D,
 > no text, no logos, no watermark."
 
-1. **Стриминг** — "An anthropomorphic fox with a headset in front of a streaming setup with a microphone and monitors."
-2. **Рисование и анимация** — "An anthropomorphic fox drawing on a graphics tablet, sketches and framed artworks around."
-3. **3D-моделирование** — "An anthropomorphic fox sculpting a glowing 3D holographic model at a desk."
-4. **Вкусно поесть** — "An anthropomorphic fox enjoying a beautifully plated meal at a cozy dark table."
-5. **Чай** — "An anthropomorphic fox pouring tea from a teapot into a cup, steam rising, tea cans and cups around."
-6. **Природа и движение** — "An anthropomorphic fox riding a bicycle through a green park in the evening."
-7. **Игры** — "An anthropomorphic fox with a game controller in front of a glowing monitor."
+1. **Стриминг** — `06_streaming_bg.png` ✅ — "An anthropomorphic fox with a headset in front of a streaming setup with a microphone and monitors."
+2. **Рисование и анимация** — `06_art_bg.png` — "An anthropomorphic fox drawing on a graphics tablet, sketches and framed artworks around."
+3. **3D-моделирование** — `06_3d_bg.png` ✅ — "An anthropomorphic fox sculpting a glowing 3D holographic model at a desk."
+4. **Вкусно поесть** — `06_food_bg.png` — "An anthropomorphic fox enjoying a beautifully plated meal at a cozy dark table."
+5. **Чай** — `06_tea_bg.png` ✅ — "An anthropomorphic fox pouring tea from a teapot into a cup, steam rising, tea cans and cups around."
+6. **Природа и движение** — `06_outdoors_bg.png` ✅ — "An anthropomorphic fox riding a bicycle through a green park in the evening."
+7. **Игры** — `06_games_bg.png` ✅ — "An anthropomorphic fox with a game controller in front of a glowing monitor."
+8. **Бильярд** — `06_billiard_bg.png` — "An anthropomorphic fox leaning over a billiard table, lining up a shot with a cue under warm low lamps."
+9. **Друзья** — `06_friends_bg.png` — "An anthropomorphic fox clinking glasses with friends at a cozy dark table."
 
 ---
 
